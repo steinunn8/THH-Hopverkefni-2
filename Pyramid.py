@@ -27,16 +27,17 @@ class Pyramid(object):
 		else:
 			return self.findKids(number, i+j+2, j+1)
 
-	# returns true if pyramid[number] is available
+	# returns true if pyramid[number] is available (and exists)
 	def isAvailable(self, number):
 		kids = self.findKids(number)
-		if(kids > len(self.pyramid)):
+		if(len(self.pyramid) <= number):
+			return False
+		elif(kids > len(self.pyramid)):
+			return True
+		elif(self.pyramid[kids] == None) and (self.pyramid[kids-1] == None) and (self.pyramid[number] != None):
 			return True
 		else:
-			if(self.pyramid[kids] == None) and (self.pyramid[kids-1] == None) and (self.pyramid[number] != None):
-				return True
-			else:
-				return False
+			return False
 	
 	# AUKA: updates self.available
 	def availableCards(self):
@@ -47,14 +48,13 @@ class Pyramid(object):
 	
 	# removes self.pyramid[number] and puts None instead
 	def remove(self, number):
-		if(len(self.pyramid) <= number):
-			return False
+		temp = self.pyramid[number]
+		if(self.isAvailable(number)):
+			self.pyramid[number] = None
+			#return True #needs fixing
+			return temp
 		else:
-			if(self.isAvailable(number)):
-				self.pyramid[number] = None
-				return True
-			else:
-				return False
+			return False
 	
 	# AUKA: updates self.available and prints out all available cards
 	def showAvailableCards(self):
@@ -62,10 +62,14 @@ class Pyramid(object):
 		for i in range(0, len(self.available)):
 			print self.available[i],
 	
+	def get(self, number):
+		return self.pyramid[number].get()
+	
 		
 		
 ### Test deck
 test = Deck.Deck()
+test.fullDeck()
 test.shuffle()
 #pyr = Pyramid(3,test)
 #pyr.remove(4)
