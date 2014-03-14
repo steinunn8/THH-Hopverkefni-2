@@ -36,7 +36,13 @@ class Deck:
 
 	def isEmpty(self):
 		return self.deck == []
-
+	
+	def showAll(self):
+		for i in range(0, len(self.deck)):
+			print self.deck[i],
+	
+	def get(self, number=0):
+		return self.deck[number].get()
 
 class Card(object):
 	def __init__(self, Suit, Rank, Up = False, Left = False, Right = False):
@@ -50,11 +56,14 @@ class Card(object):
 	#where X is the suit of the card and Y is the rank
 	def __str__(self):
 		return "["+self.suit+" "+str(self.rank)+"]"
-
+	
+	def get(self):
+		return [self.suit, self.rank]
 
 
 #Test deck
 hand = Deck()
+hand.fullDeck()
 hand.shuffle()
 """for i in range(0, 52):
 		print hand.show(i),
