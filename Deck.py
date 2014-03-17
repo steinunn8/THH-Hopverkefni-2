@@ -54,12 +54,16 @@ class Deck:
 		return self.deck[number].get()
 
 class Card(object):
-	def __init__(self, Suit, Rank, Red, Up = False):
+	def __init__(self, Suit, Rank, Red, Up = False, Left = None, Right = None):
 		self.suit = Suit
 		self.rank = Rank
 		self.red = Red
 		self.up = Up
-		
+		self.left = Left
+		self.right = Right
+		#center of card
+		self.x = None
+		self.y = None
 
 	#When str() is used on Card, [X Y] will be the output 
 	#where X is the suit of the card and Y is the rank

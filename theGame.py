@@ -43,7 +43,15 @@ class theGame(object):
 		if(((X=="H")or(X=="D"))and((Y=="S")or(Y=="C"))) or (((Y=="H")or(Y=="D"))and((X=="S")or(X=="C"))):
 			return True
 		else:
+			return 
+
+	def checkSort2(self, cardX, cardY):
+		x = cardX
+		y = cardY
+		if(x.red and y.red or not x.red and not y.red):
 			return False
+		else:
+			return True
 
 	def isLegal(self, number):
 		if not(self.pyramid.isAvailable(number)):
