@@ -1,8 +1,9 @@
-import wx, sys, os, pygame
+import wx, sys, os, pygame, random
 from pygame.locals import*
 import theGame
 
 # a simple Card to test movement
+# card displayed as a picture of a card
 class Card(pygame.sprite.Sprite):
     def __init__(self):
        # Call the parent class (Sprite) constructor
@@ -16,7 +17,53 @@ class Card(pygame.sprite.Sprite):
         mouse_pos = app.frame.ScreenToClient(wx.GetMousePosition())
         if (app.frame.display.mouse_down and self.rect.collidepoint(mouse_pos)):
             self.rect.center = mouse_pos
-            
+            app.frame.display.card_moving = True
+
+
+# cards displayed as numbers
+class TempCard(pygame.sprite.Sprite):
+    # common for all TempCards
+    black = (0,0,0)
+    red = (255,0,0)
+    white = (255, 255, 255)
+    yellow = (255, 255, 0)
+    width = 50
+    height = 100
+    
+    def __init__(self, pos, num):
+       pygame.sprite.Sprite.__init__(self)
+
+       self.num = num
+       self.orig_pos = pos
+
+       '''
+       # draw box
+       self.image = pygame.Surface((self.width,self.height)) # created on the fly
+       #self.image.set_colorkey(self.white) # white transparent
+       self.rect = self.image.get_rect()
+       self.rect.center = pos
+       '''
+
+       # draw text
+       self.font = pygame.font.SysFont("Arial", 80)
+       self.image = self.font.render(str(self.num), 1, self.black)
+       self.rect = self.image.get_rect()
+       self.rect.center = pos
+
+       
+    def update(self):
+        mouse_pos = app.frame.ScreenToClient(wx.GetMousePosition())
+        
+        # if the mouse clicks on the card
+        if (app.frame.display.mouse_down and self.rect.collidepoint(mouse_pos)
+            and not app.frame.display.card_moving):
+            # move the card with the mouse
+            self.rect.center = mouse_pos
+            app.frame.display.card_moving = True
+        else:
+            # move the card to it's original position
+            self.rect.center = self.orig_pos
+
     
 class PygameDisplay(wx.Window):
     def __init__(self, parent, ID):
@@ -30,12 +77,33 @@ class PygameDisplay(wx.Window):
         # -------- game stuff begin ----------
         
         pygame.init()
-        self.rect_x = 50
-        self.blue = (0,0,255)
-        self.red = (255,0,0)
-        self.card = Card()
+        self.screen = pygame.Surface(self.size, 0, 32)
+        #self.card = Card()
         self.mouse_down = False
-        #self.Game = theGame.theGame(4, True)
+        self.card_moving = False
+        self.white = (255, 255, 255)
+
+        # groups for sprites
+        self.tempCards = pygame.sprite.Group()
+        self.allCards = pygame.sprite.Group()
+
+        # positions and number of the cards
+        self.x = 100
+        self.y = 100
+        self.num_card = 0
+
+        # make cards in pyramid
+        for i in range(7):
+            tempCard = TempCard([self.x, self.y], self.num_card)
+            self.tempCards.add(tempCard)
+            self.allCards.add(tempCard)
+            self.x += 60
+            self.num_card += 1 
+
+        # make card in deck to compare to
+        self.compare_num = random.randint(0, 6)
+        self.compareCard = TempCard([250, 300], self.compare_num)
+        self.allCards.add(self.compareCard)
         
 
         # -------- game stuff end ----------
@@ -50,13 +118,33 @@ class PygameDisplay(wx.Window):
         self.fps = 60.0
         self.timespacing = 1000.0 / self.fps
         self.timer.Start(self.timespacing, False)
+
+        # button to draw new card
+        self.draw_button = wx.Button(self, label="Draw new card", pos = (400, 400))
+        self.Bind(wx.EVT_BUTTON, self.drawNewCard, self.draw_button)
         
+    def drawNewCard(self, event):
+        # remove last card
+        self.compareCard.kill()
+
+        # make new card
+        self.compare_num = random.randint(0, 6)
+        self.compareCard = TempCard([250, 300], self.compare_num)
+        self.allCards.add(self.compareCard)      
 
     def Update(self, event):
         # Any update tasks would go here (moving sprites, advancing animation frames etc.)
-        self.rect_x += 1
-        self.card.update()
-        
+        app.frame.display.card_moving = False
+
+        # update cards
+        self.tempCards.update()
+
+        # check if card is moved to deck
+        for card in self.tempCards:
+            if self.compareCard.rect.colliderect(card.rect) and self.compareCard.num == card.num:
+                card.kill()
+
+        # draw everything on screen
         self.Redraw()
  
     def Redraw(self):
@@ -65,16 +153,12 @@ class PygameDisplay(wx.Window):
             self.screen = pygame.Surface(self.size, 0, 32)
             self.size_dirty = False 
 
-        # set background red
-        self.screen.fill(self.red)
+        # set background white
+        self.screen.fill(self.white)
 
-        # draw a rectangle which moves
-        pygame.draw.rect(self.screen, self.blue, (self.rect_x,50,50,50), 10)
-
-        # draw the card
-        self.screen.blit(self.card.image, self.card.rect)
-
-
+        # draw the cards
+        #self.screen.blit(self.card.image, self.card.rect)
+        self.allCards.draw(self.screen)
 
         # stuff to draw everything with wx/pygame combined
         s = pygame.image.tostring(self.screen, 'RGB')  # Convert the surface to an RGB string
@@ -122,16 +206,20 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
 
+        # menu bar
         menuBar = wx.MenuBar()
         menu = wx.Menu()
         m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
         self.Bind(wx.EVT_MENU, self.Kill, m_exit)
         menuBar.Append(menu, "&File")
+        m_new_game = menu.Append(wx.ID_ABOUT, "&New Game", "Start a new game.")
+        self.Bind(wx.EVT_MENU, self.OnNewGame, m_new_game)
+
         self.SetMenuBar(menuBar)
        
         self.curframe = 0
        
-        self.SetTitle("Kapall: First edition")
+        self.SetTitle("Pyramid: First edition")
        
         self.timer = wx.Timer(self)
 
@@ -159,6 +247,10 @@ class Frame(wx.Frame):
     def Update(self, event):
         self.curframe += 1
         self.statusbar.SetStatusText("Frame %i" % self.curframe, 2)
+
+    def OnNewGame(self, event):
+        # has no activity
+        return
  
 class App(wx.App):
     def OnInit(self):
