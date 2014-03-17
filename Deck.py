@@ -10,20 +10,29 @@ class Deck:
 		rank = range(1, 14)
 		for i in range(0, len(suit)):
 			for j in range(0, len(rank)):
-				card = Card(suit[i], rank[j])
-				self.deck.append(card)
+				if(i == 0 or i == 2):
+					card = Card(suit[i], rank[j], True)
+					self.deck.append(card)
+				else:
+					card = Card(suit[i], rank[j], False)
+					self.deck.append(card)					
 
 	def shuffle(self):
 		random.shuffle(self.deck)
 	
 	#Shows first card and then removes it from the deck	
 	def draw(self):
-		self.isEmpty()
-		return self.deck.pop(0)
+		if(not self.isEmpty()):
+			return self.deck.pop(0)
+		else:
+			return
 
 	#Shows first card in deck but does not remove it
 	def show(self, key=0):
-		return self.deck[key]
+		if(not self.isEmpty()):
+			return self.deck[key]
+		else:
+			return
 
 	def addFirst(self,card):
 		self.deck.insert(0,card)
@@ -45,12 +54,12 @@ class Deck:
 		return self.deck[number].get()
 
 class Card(object):
-	def __init__(self, Suit, Rank, Up = False, Left = False, Right = False):
+	def __init__(self, Suit, Rank, Red, Up = False):
 		self.suit = Suit
 		self.rank = Rank
+		self.red = Red
 		self.up = Up
-		self.left = Left
-		self.right = Right
+		
 
 	#When str() is used on Card, [X Y] will be the output 
 	#where X is the suit of the card and Y is the rank
@@ -70,6 +79,5 @@ hand.shuffle()
 class Tree(object):
 	def __init__(self, Height):
 		self.height = Height
-
 """
 
