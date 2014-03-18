@@ -1,5 +1,6 @@
 import Deck
 import Pyramid
+import PyramidTree
 
 # height is the number of rows, sortsOn = True is when the sort matters (only red can go and black and vice versa)
 class theGame(object):
@@ -45,15 +46,7 @@ class theGame(object):
 		else:
 			return 
 
-	def checkSort2(self, cardX, cardY):
-		x = cardX
-		y = cardY
-		if(x.red and y.red or not x.red and not y.red):
-			return False
-		else:
-			return True
-
-	def isLegal(self, number):
+	"""def isLegal(self, number):
 		if not(self.pyramid.isAvailable(number)):
 			return False
 		
@@ -66,14 +59,50 @@ class theGame(object):
 			else:
 				if(self.checkSort(topTrash, pyramidCard)):
 					return True
-		return False
+		return False"""
 
 	def quit(self):
 		exit()
 	
 	#def newGame(self):
+
+
+"""NEW NEW NEW"""
+
+class theGame2(object):
+	def __init__(self, height, sortsOn = False):
+		self.deck = None 			#Get from Edda
+		self.trash = Deck.Deck()
+		self.pyramid = None			#Get from Edda
+		self.sortsOn = sortsOn
+
+	def possitionDeck(self, deck):
+		for i in range(0, len(deck)):
+			card = deck.draw()
+			card.x = 250
+			card.y = 300
+			deck.addLast(card)
 	
-	
+	def checkSort(self, cardX, cardY):
+		x = cardX
+		y = cardY
+		if(x.red and y.red or not x.red and not y.red):
+			return False
+		else:
+			return True
+
+	def getPyramid(self):
+		self.pyramid = PyramidTree.Pyramid()
+		return self.pyramid
+
+	def quit(self):
+		exit()
+
+
+
+
+
+
 #test:
 # test = theGame(3, True)
 # test.showAll()
