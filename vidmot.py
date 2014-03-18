@@ -1,6 +1,6 @@
 import wx, sys, os, pygame, random
 from pygame.locals import*
-import theGame
+import theGame, PyramidTree, Deck
 
 # a simple Card to test movement
 # card displayed as a picture of a card
@@ -35,14 +35,6 @@ class TempCard(pygame.sprite.Sprite):
 
        self.num = num
        self.orig_pos = pos
-
-       '''
-       # draw box
-       self.image = pygame.Surface((self.width,self.height)) # created on the fly
-       #self.image.set_colorkey(self.white) # white transparent
-       self.rect = self.image.get_rect()
-       self.rect.center = pos
-       '''
 
        # draw text
        self.font = pygame.font.SysFont("Arial", 80)
@@ -87,23 +79,19 @@ class PygameDisplay(wx.Window):
         self.tempCards = pygame.sprite.Group()
         self.allCards = pygame.sprite.Group()
 
-        # positions and number of the cards
-        self.x = 100
-        self.y = 100
-        self.num_card = 0
-
-        # make cards in pyramid
-        for i in range(7):
-            tempCard = TempCard([self.x, self.y], self.num_card)
+        # make sprites for cards
+        for i in range(0, len(pyramid_list)):
+            card = pyramid_list[i]
+            tempCard = TempCard([card.x, card.y], str(card.data))
             self.tempCards.add(tempCard)
             self.allCards.add(tempCard)
-            self.x += 60
-            self.num_card += 1 
 
-        # make card in deck to compare to
+
+        # draw card in deck to compare to
         self.compare_num = random.randint(0, 6)
         self.compareCard = TempCard([250, 300], self.compare_num)
         self.allCards.add(self.compareCard)
+        self.draw_card()
         
 
         # -------- game stuff end ----------
@@ -120,17 +108,20 @@ class PygameDisplay(wx.Window):
         self.timer.Start(self.timespacing, False)
 
         # button to draw new card
-        self.draw_button = wx.Button(self, label="Draw new card", pos = (400, 400))
+        self.draw_button = wx.Button(self, label="Draw new card", pos = (700, 500))
         self.Bind(wx.EVT_BUTTON, self.drawNewCard, self.draw_button)
         
-    def drawNewCard(self, event):
+    def drawNewCard(self, event):        
+        self.draw_card()
+
+    def draw_card(self):
         # remove last card
         self.compareCard.kill()
 
-        # make new card
-        self.compare_num = random.randint(0, 6)
-        self.compareCard = TempCard([250, 300], self.compare_num)
-        self.allCards.add(self.compareCard)      
+        newCard = deck.draw()
+        self.compareCard = TempCard([newCard.x, newCard.y], str(newCard))
+        self.allCards.add(self.compareCard)
+        
 
     def Update(self, event):
         # Any update tasks would go here (moving sprites, advancing animation frames etc.)
@@ -193,15 +184,8 @@ class PygameDisplay(wx.Window):
          
 class Frame(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, -1, size = (600, 600))
-       
+        wx.Frame.__init__(self, parent, -1, size = (900, 700))      
         self.display = PygameDisplay(self, -1)
-       
-        self.statusbar = self.CreateStatusBar()
-        self.statusbar.SetFieldsCount(3)
-        self.statusbar.SetStatusWidths([-3, -4, -2])
-        self.statusbar.SetStatusText("wxPython", 0)
-        self.statusbar.SetStatusText("Look, it's a nifty status bar!!!", 1)
        
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
@@ -215,10 +199,7 @@ class Frame(wx.Frame):
         m_new_game = menu.Append(wx.ID_ABOUT, "&New Game", "Start a new game.")
         self.Bind(wx.EVT_MENU, self.OnNewGame, m_new_game)
 
-        self.SetMenuBar(menuBar)
-       
-        self.curframe = 0
-       
+        self.SetMenuBar(menuBar)       
         self.SetTitle("Pyramid: First edition")
        
         self.timer = wx.Timer(self)
@@ -229,8 +210,6 @@ class Frame(wx.Frame):
         self.timer.Start((1000.0 / self.display.fps))
        
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer2 = wx.BoxSizer(wx.HORIZONTAL)
-        self.sizer.Add(self.sizer2, 0, flag = wx.EXPAND)
         self.sizer.Add(self.display, 1, flag = wx.EXPAND)
        
         self.SetAutoLayout(True)
@@ -243,10 +222,9 @@ class Frame(wx.Frame):
  
     def OnSize(self, event):
         self.Layout()
- 
+
     def Update(self, event):
-        self.curframe += 1
-        self.statusbar.SetStatusText("Frame %i" % self.curframe, 2)
+        return
 
     def OnNewGame(self, event):
         # has no activity
@@ -261,5 +239,10 @@ class App(wx.App):
         return True
  
 if __name__ == "__main__":
+    deck = Deck.Deck()
+    deck.fullDeck()
+    deck.shuffle()
+    pyramid = PyramidTree.Pyramid(deck, 4)
+    pyramid_list = pyramid.getCards()
     app = App()
     app.MainLoop()

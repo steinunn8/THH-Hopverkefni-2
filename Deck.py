@@ -60,8 +60,8 @@ class Card(object):
 		self.red = Red
 		self.up = False
 		#center of card
-		self.x = None
-		self.y = None
+		self.x = 450
+		self.y = 500
 
 	#When str() is used on Card, [X Y] will be the output 
 	#where X is the suit of the card and Y is the rank
