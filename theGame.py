@@ -2,6 +2,47 @@ import Deck
 import Pyramid
 import PyramidTree
 
+"""NEW NEW NEW"""
+
+class theGame(object):
+	def __init__(self, height, sortsOn = False):
+		#Make full deck
+		deck = Deck.Deck()
+		deck.fullDeck()
+		deck.shuffle()
+		pyramidOb = PyramidTree.Pyramid(deck, height)
+
+		self.pyramid = pyramidOb.getCards() 	#Pyramid cards in list
+		self.deck = pyramidOb.getDeck()			#Rest of cards
+		self.trash = Deck.Deck()    			#Empty Deck	
+		self.sortsOn = sortsOn
+
+	def positionDeck(self, deck):
+		for i in range(0, len(deck)):
+			card = deck.draw()
+			card.x = 250
+			card.y = 300
+			deck.addLast(card)
+	
+	def checkSort(self, cardX, cardY):
+		x = cardX
+		y = cardY
+		if(x.red and y.red or not x.red and not y.red):
+			return False
+		else:
+			return True
+
+	#Needs fixing!
+	def isLegal(self):
+		return True
+
+#test:
+# test = theGame(3, True)
+# test.showAll()
+# test.draw() ...
+# test.pick(4) ...
+	
+"""
 # height is the number of rows, sortsOn = True is when the sort matters (only red can go and black and vice versa)
 class theGame(object):
 	def __init__(self, height, sortsOn=False):
@@ -45,8 +86,7 @@ class theGame(object):
 			return True
 		else:
 			return 
-
-	"""def isLegal(self, number):
+def isLegal(self, number):
 		if not(self.pyramid.isAvailable(number)):
 			return False
 		
@@ -59,53 +99,10 @@ class theGame(object):
 			else:
 				if(self.checkSort(topTrash, pyramidCard)):
 					return True
-		return False"""
+		return False
 
 	def quit(self):
 		exit()
 	
 	#def newGame(self):
-
-
-"""NEW NEW NEW"""
-
-class theGame2(object):
-	def __init__(self, height, sortsOn = False):
-		self.deck = None 			#Get from Edda
-		self.trash = Deck.Deck()
-		self.pyramid = None			#Get from Edda
-		self.sortsOn = sortsOn
-
-	def possitionDeck(self, deck):
-		for i in range(0, len(deck)):
-			card = deck.draw()
-			card.x = 250
-			card.y = 300
-			deck.addLast(card)
-	
-	def checkSort(self, cardX, cardY):
-		x = cardX
-		y = cardY
-		if(x.red and y.red or not x.red and not y.red):
-			return False
-		else:
-			return True
-
-	def getPyramid(self):
-		self.pyramid = PyramidTree.Pyramid()
-		return self.pyramid
-
-	def quit(self):
-		exit()
-
-
-
-
-
-
-#test:
-# test = theGame(3, True)
-# test.showAll()
-# test.draw() ...
-# test.pick(4) ...
-	
+"""

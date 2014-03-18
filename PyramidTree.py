@@ -55,10 +55,7 @@ class Pyramid:
 	def __init__(self, deck, height):
 		self.height = height
 		self.deck = deck
-		
-		self.deck.fullDeck()
-		self.deck.shuffle()
-		
+
 		self.list = []
 		
 		print "spil i stokki:"
@@ -108,10 +105,10 @@ class Pyramid:
 		
 
 #test
-deck = Deck.Deck()
-pyramid = Pyramid(deck, 4)
-print "pyramidi"
-list = pyramid.getCards()
-for i in range(0, len(list)):
-	print list[i].data
+#deck = Deck.Deck()
+#pyramid = Pyramid(deck, 4)
+#print "pyramidi"
+#list = pyramid.getCards()
+#for i in range(0, len(list)):
+#	print list[i].data
 
