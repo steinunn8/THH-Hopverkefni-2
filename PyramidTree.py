@@ -30,6 +30,14 @@ class CardTree(object):
 				self.right.insert_right(data,True)
 			else:
 				self.right.insert_right(data)
+	
+	def delete(self):
+		if self.rightParent is not None:
+			right_parent = self.rightParent
+			right_parent.left = None
+		if self.leftParent is not None:
+			left_parent = self.leftParent
+			left_parent.right = None
 		
 	#Shows the card (for example temp.show() shows what card temp is)
 	def show(self):
@@ -48,8 +56,10 @@ class Pyramid:
 		print self.deck.show(1)
 		print self.deck.show(2)
 		print self.deck.show(3)
+		print "same card:"
 		print self.deck.show(4)
 		print self.deck.show(5)
+		print "aetla ad eyda thessu:"
 		print self.deck.show(6)
 		print "same card 1:"
 		print self.deck.show(7)
@@ -92,7 +102,12 @@ class Pyramid:
 		print self.root.right.right.show()
 		
 		print self.root.left.left.left.show()
-		print self.root.right.right.right.show()
+		
+		print "thessu verdur eytt bradum"
+		print self.root.right.right.right.show() 
+		self.root.right.right.right.delete()
+		print "and its gone:"
+		print self.root.right.right.right
 		
 		print "same card 1:"
 		print self.root.left.right.show()
