@@ -1,75 +1,113 @@
 import Deck
 		
-class Pyramid(object):		
-	def __init__(self, height, deck):
-		self.pyramid = []
-		self.available = []
-		count = self.findCount(height)
-		while(count != 0):
-			self.pyramid.append(deck.draw())
-			count -= 1
-		
-	# Find the number of cards needed in a Pyramid if the depth is height
-	def findCount(self, height, count=0):
-		if(height == 0):
-			return count
-		return self.findCount(height-1, count+height)
+class CardTree(object):		
+	def __init__(self, data, x=None, y=None):
+		self.left = None
+		self.right = None
+		self.data = data
+		self.rightParent = None
+		self.leftParent = None
+		self.x = x
+		self.y = y
+		self.up = False
 	
-	# AUKA: prints all the cards that are in the pyramid
-	def showAll(self):
-		for i in range(0, len(self.pyramid)):
-			print self.pyramid[i],
-	
-	# returns the number of where the kid that is under pyramid[number] and on the right side
-	def findKids(self, number, i=0, j=0):
-		if(number <= i):
-			return number + j+2
+	def insert_left(self, data, list):
+		if self.left is None:
+			self.left = CardTree(data)
+			self.left.rightParent = self
+			self.left.x = self.x-80
+			self.left.y = self.y+100
+			list.append(self.left)
 		else:
-			return self.findKids(number, i+j+2, j+1)
+			self.left.insert_left(data,list)
+	
+	def insert_right(self, data, list, special=False):
+		if self.right is None:
+			self.right = CardTree(data)
+			self.right.leftParent = self
+			self.right.x = self.x+80
+			self.right.y = self.y+100
+			list.append(self.right)
+			if(special):
+				parent = self
+				master = parent.rightParent
+				magic = master.right
+				magic.left = self.right
+				self.right.rightParent = magic.left
+		else:
+			if(special):
+				self.right.insert_right(data,list,True)
+			else:
+				self.right.insert_right(data,list)
+	
+	def delete(self):
+		if self.rightParent is not None:
+			right_parent = self.rightParent
+			right_parent.left = None
+		if self.leftParent is not None:
+			left_parent = self.leftParent
+			left_parent.right = None
+			
+	def isAvailable(self):
+		if(self.left is None and self.right is None):
+			return True
+		else:
+			return False
+		
+		
+	#Shows the card (for example temp.show() shows what card temp is)
+	def show(self):
+		return self.data
 
-	# returns true if pyramid[number] is available (and exists)
-	def isAvailable(self, number):
-		kids = self.findKids(number)
-		if(len(self.pyramid) <= number):
-			return False
-		elif(kids > len(self.pyramid)):
-			return True
-		elif(self.pyramid[kids] == None) and (self.pyramid[kids-1] == None) and (self.pyramid[number] != None):
-			return True
-		else:
-			return False
-	
-	# AUKA: updates self.available
-	def availableCards(self):
-		self.available = []
-		for i in range(0, len(self.pyramid)):
-			if(self.isAvailable(i)) and (self.pyramid[i] != None):
-				self.available.append(self.pyramid[i])
-	
-	# removes self.pyramid[number] and puts None instead
-	def remove(self, number):
-		temp = self.pyramid[number]
-		if(self.isAvailable(number)):
-			self.pyramid[number] = None
-			#return True #needs fixing
-			return temp
-		else:
-			return False
-	
-	# AUKA: updates self.available and prints out all available cards
-	def showAvailableCards(self):
-		self.availableCards()
-		for i in range(0, len(self.available)):
-			print self.available[i],
-	
-	def get(self, number):
-		return self.pyramid[number].get()
-	
+class Pyramid:
+	def __init__(self, deck, height):
+		self.height = height
+		self.deck = deck
 		
+		self.list = []
 		
-### Test deck
-test = Deck.Deck()
-test.fullDeck()
-test.shuffle()
-#pyr = Pyramid(3,test)
-#pyr.remove(4)
+		self.root = CardTree(self.deck.draw(),450,80)
+		self.list.append(self.root)
+		
+		for i in range(0, self.height-1):
+			self.root.insert_left(self.deck.draw(),self.list)
+			self.root.insert_right(self.deck.draw(),self.list)
+		
+		self.finishPyramid()
+		
+		for i in range(0, len(self.list)):
+			if(self.list[i].isAvailable()):
+				self.list[i].up = True
+		
+	def getDeck(self):
+		return self.deck
+	
+	def finishPyramid(self):
+		for i in range(self.height-2, 0, -1):
+			if(i == self.height-2):
+				for j in range(0, i):
+					self.root.left.insert_right(self.deck.draw(),self.list,True)
+			if(i == self.height-3):
+				for j in range(0, i):
+					self.root.left.left.insert_right(self.deck.draw(),self.list,True)
+			if(i == self.height-4):
+				for j in range(0, i):
+					self.root.left.left.left.insert_right(self.deck.draw(),self.list,True)
+			if(i == self.height-5):
+				for j in range(0, i):
+					self.root.left.left.left.left.insert_right(self.deck.draw(),self.list,True)
+			if(i == self.height-6):
+				for j in range(0, i):
+					self.root.left.left.left.left.left.insert_right(self.deck.draw(),self.list,True)
+	
+	def getCards(self):
+		return self.list
+		
+
+#test
+deck = Deck.Deck()
+deck.fullDeck()
+deck.shuffle()
+pyramid = Pyramid(deck, 4)
+print pyramid.list[5].up
+print pyramid.list[4].up
