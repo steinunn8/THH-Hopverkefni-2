@@ -54,13 +54,11 @@ class Deck:
 		return self.deck[number].get()
 
 class Card(object):
-	def __init__(self, Suit, Rank, Red, Up = False, Left = None, Right = None):
+	def __init__(self, Suit, Rank, Red):
 		self.suit = Suit
 		self.rank = Rank
 		self.red = Red
-		self.up = Up
-		self.left = Left
-		self.right = Right
+		self.up = False
 		#center of card
 		self.x = None
 		self.y = None
@@ -69,10 +67,6 @@ class Card(object):
 	#where X is the suit of the card and Y is the rank
 	def __str__(self):
 		return "["+self.suit+" "+str(self.rank)+"]"
-	
-	def get(self):
-		return [self.suit, self.rank]
-
 
 #Test deck
 hand = Deck()
