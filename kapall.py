@@ -28,12 +28,14 @@ class TempCard(pygame.sprite.Sprite):
         self.num = num
         self.orig_pos = pos
         self.real_card = real_card
+        
+        # set color to red if card is "facing up"
         if (self.real_card.up):
             self.color = self.red
         else:
             self.color = self.black
             
-        # draw text
+        # "draw card"
         self.font = pygame.font.SysFont("Arial", 70)
         self.image = self.font.render(str(self.num), 1, self.color)
         self.rect = self.image.get_rect()
@@ -72,7 +74,6 @@ class PygameDisplay(wx.Window):
 
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_TIMER, self.Update, self.timer)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_LEFT_DOWN, self.onMouseDown)
         self.Bind(wx.EVT_LEFT_UP, self.onMouseUp)
@@ -99,6 +100,7 @@ class PygameDisplay(wx.Window):
         # button to draw new card
         self.draw_button = wx.Button(self, label="Draw new card", pos = (700, 500))
         self.Bind(wx.EVT_BUTTON, self.drawNewCard, self.draw_button)
+        self.Bind(wx.EVT_TIMER, self.Update, self.timer)
 
         # -------- game stuff end ----------
         
@@ -254,11 +256,6 @@ class App(wx.App):
         return True
  
 if __name__ == "__main__":
-    '''deck = Deck.Deck()
-    deck.fullDeck()
-    deck.shuffle()
-    pyramid = PyramidTree.Pyramid(deck, 4)
-    pyramid_list = pyramid.getCards()'''
     game = theGame.theGame(4)
     
     app = App()
