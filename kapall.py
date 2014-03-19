@@ -1,6 +1,6 @@
 import wx, sys, os, pygame, random
 from pygame.locals import*
-import theGame, PyramidTree, Deck
+import theGame
 
 # card displayed as a picture of a card
 # to use later with a card sprite
