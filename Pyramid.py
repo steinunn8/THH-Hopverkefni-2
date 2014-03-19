@@ -1,63 +1,4 @@
 import Deck
-		
-'''class CardTree(object):		
-	def __init__(self, data, x=None, y=None):
-		self.left = None
-		self.right = None
-		self.data = data
-		self.rightParent = None
-		self.leftParent = None
-		self.x = x
-		self.y = y
-		self.data.up = False
-	
-	def insert_left(self, data, list):
-		if self.left is None:
-			self.left = CardTree(data)
-			self.left.rightParent = self
-			self.left.x = self.x-80
-			self.left.y = self.y+100
-			list.append(self.left)
-		else:
-			self.left.insert_left(data,list)
-	
-	def insert_right(self, data, list, special=False):
-		if self.right is None:
-			self.right = CardTree(data)
-			self.right.leftParent = self
-			self.right.x = self.x+80
-			self.right.y = self.y+100
-			list.append(self.right)
-			if(special):
-				parent = self
-				master = parent.rightParent
-				magic = master.right
-				magic.left = self.right
-				self.right.rightParent = magic.left
-		else:
-			if(special):
-				self.right.insert_right(data,list,True)
-			else:
-				self.right.insert_right(data,list)
-	
-	def delete(self):
-		if self.rightParent is not None:
-			right_parent = self.rightParent
-			right_parent.left = None
-		if self.leftParent is not None:
-			left_parent = self.leftParent
-			left_parent.right = None
-			
-	def isAvailable(self):
-		if(self.left is None and self.right is None):
-			return True
-		else:
-			return False
-		
-		
-	#Shows the card (for example temp.show() shows what card temp is)
-	def show(self):
-		return self.data'''
 
 class Pyramid:
 	def __init__(self, deck, height):
@@ -105,9 +46,3 @@ class Pyramid:
 	def getCards(self):
 		return self.list
 		
-
-#test
-deck = Deck.Deck()
-deck.fullDeck()
-deck.shuffle()
-pyramid = Pyramid(deck, 4)

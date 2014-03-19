@@ -106,12 +106,8 @@ class Card(object):
 	
 	def delete(self):
 		if self.rightParent is not None:
-			#right_parent = self.rightParent
-			#right_parent.left = None
-                        self.rightParent.left = None
+			self.rightParent.left = None
 		if self.leftParent is not None:
-			#left_parent = self.leftParent
-			#left_parent.right = None
 			self.leftParent.right = None
 			
 	def isAvailable(self):
@@ -126,8 +122,4 @@ class Card(object):
 	def show(self):
 		return self.data
 
-#Test deck
-hand = Deck()
-hand.fullDeck()
-hand.shuffle()
 
