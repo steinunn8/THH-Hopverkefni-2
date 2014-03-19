@@ -112,7 +112,7 @@ class Card(object):
 			
 	def isAvailable(self):
 		if(self.left is None and self.right is None):
-                        self.up = True
+			self.up = True
 			return True
 		else:
 			return False
