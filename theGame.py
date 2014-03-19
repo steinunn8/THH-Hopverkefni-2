@@ -52,9 +52,9 @@ class theGame(object):
 		y = self.trash.show()
 		if(self.isLegal(x)):
                         x.delete()
-			self.gameWon()
 			self.trash.addFirst(x)
 			self.pyramid.remove(x)
+			self.gameWon()
 			return True
 		return False
 

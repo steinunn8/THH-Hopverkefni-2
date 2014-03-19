@@ -105,7 +105,7 @@ class PygameDisplay(wx.Window):
 
     def Update(self, event):
         # Any update tasks would go here (moving sprites, advancing animation frames etc.)
-        app.frame.display.card_moving = False
+        self.card_moving = False
 
         # update cards
         self.tempCards.update()
@@ -166,7 +166,6 @@ class PygameDisplay(wx.Window):
                     self.compareCard.kill()
                     self.compareCard = TempCard([450, 500], str(card.real_card), card.real_card)
                     self.allCards.add(self.compareCard)
-                    print "num", self.compareCard.num
                     # remove card from pyramid
                     card.kill()
 
