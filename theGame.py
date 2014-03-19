@@ -41,7 +41,7 @@ class theGame(object):
 					return True
 			return False
 		else:
-			if(x.up):
+			if(x.isAvailable()):
 				if(abs(x.rank - y.rank) == 1):
 					return True
 				elif(abs(x.rank - y.rank) == 12): #if ace and king or king and ace
