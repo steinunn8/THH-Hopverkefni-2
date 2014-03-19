@@ -52,11 +52,10 @@ class theGame(object):
 	def pick(self, x): #x is a card, h is CardTree
 		y = self.trash.show()
 		if(self.isLegal(x)):
-                        print x
-                        #x.delete()
+                        x.delete()
 			self.gameWon()
 			self.trash.addFirst(x)
-			
+			self.pyramid.remove(x)
 			return True
 		return False
 
@@ -88,9 +87,4 @@ class theGame(object):
 			return True
 		else:
 			return False
-
-game = theGame(4)
-game.showAll()
-
-
 

@@ -39,17 +39,22 @@ class TempCard(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
-       
     def update(self):
         mouse_pos = app.frame.ScreenToClient(wx.GetMousePosition())
         
         # if the mouse clicks on the card
-        #if (self.real_card.up and app.frame.display.mouse_down and self.rect.collidepoint(mouse_pos)
         if (app.frame.display.mouse_down and self.rect.collidepoint(mouse_pos)
             and not app.frame.display.card_moving):
-            # move the card with the mouse
-            self.rect.center = mouse_pos
-            app.frame.display.card_moving = True
+            if (self.real_card.up):
+                # move the card with the mouse
+                self.rect.center = mouse_pos
+                app.frame.display.card_moving = True
+            else:
+                self.real_card.isAvailable()
+                if (self.real_card.up):
+                    # change color of card
+                    self.color = self.red
+                    self.image = self.font.render(str(self.num), 1, self.color)
         else:
             # move the card to it's original position
             self.rect.center = self.orig_pos
@@ -154,15 +159,16 @@ class PygameDisplay(wx.Window):
 
         # check if card is moved to deck
         for card in self.tempCards:
-            can_kill = game.pick(card.real_card)
-            if self.compareCard.rect.colliderect(card.rect) and can_kill:
-                # set card to deck
-                self.compareCard.kill()
-                self.compareCard = TempCard([450, 500], str(card.real_card), card.real_card)
-                self.allCards.add(self.compareCard)
-                print "num", self.compareCard.num
-                # remove card from pyramid
-                card.kill()
+            if self.compareCard.rect.colliderect(card.rect):
+                can_kill = game.pick(card.real_card)
+                if (can_kill):
+                    # set card to deck
+                    self.compareCard.kill()
+                    self.compareCard = TempCard([450, 500], str(card.real_card), card.real_card)
+                    self.allCards.add(self.compareCard)
+                    print "num", self.compareCard.num
+                    # remove card from pyramid
+                    card.kill()
 
     def generate_pyramid(self):
         # make sprites for cards

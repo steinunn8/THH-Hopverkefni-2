@@ -111,5 +111,3 @@ deck = Deck.Deck()
 deck.fullDeck()
 deck.shuffle()
 pyramid = Pyramid(deck, 4)
-print pyramid.list[5].up
-print pyramid.list[4].up

@@ -61,7 +61,7 @@ class Card(object):
 		self.suit = Suit
 		self.rank = Rank
 		self.red = Red
-		self.up = True
+		self.up = False
 		self.left = None
 		self.right = None
 		self.rightParent = None
@@ -116,6 +116,7 @@ class Card(object):
 			
 	def isAvailable(self):
 		if(self.left is None and self.right is None):
+                        self.up = True
 			return True
 		else:
 			return False
