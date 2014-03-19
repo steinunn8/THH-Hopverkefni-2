@@ -3,9 +3,7 @@ import theGame
 import Pyramid
 import Deck
 
-class testMaxFunctions(unittest.TestCase):
-	
-# Deck
+class test_Deck_Functions(unittest.TestCase):
 	def test_draw(self):
 		testDeck = Deck.Deck()
 		self.assertEqual(testDeck.draw(), None)
@@ -21,7 +19,7 @@ class testMaxFunctions(unittest.TestCase):
 		card = Deck.Card("H", 1, True)
 		self.assertEqual(card.isAvailable(), True)
 	
-# theGame
+class test_theGame_Functions(unittest.TestCase):
 	def test_checkSort(self):
 		testGame = theGame.theGame(2)
 		testGame.flip()
