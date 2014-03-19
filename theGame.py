@@ -17,12 +17,13 @@ class theGame(object):
 		self.trash = Deck.Deck()    			#Empty Deck	
 		self.sortsOn = sortsOn
 
-	def positionDeck(self, deck):
-		for i in range(0, len(deck)):
+
+	"""def positionDeck(self, deck):
+		for i in range(0, len(self.deck)):
 			card = deck.draw()
 			card.x = 450
 			card.y = 500
-			deck.addLast(card)
+			deck.addLast(card)"""
 	
 	def checkSort(self, x): #x is a card
 		y = self.trash.show()
@@ -33,7 +34,7 @@ class theGame(object):
 	
 	def isLegal(self, x): #x is a card, h is a CardTree object
 		y = self.trash.show()
-		if(sortsOn):	
+		if(self.sortsOn):	
 			if(x.isAvailable() and checkSort(x)): #Still a mess
 				if(abs(x.rank - y.rank) == 1):
 					return True
@@ -50,7 +51,8 @@ class theGame(object):
 
 	def pick(self, x): #x is a card, h is CardTree
 		y = self.trash.show()
-		if(isLegal(x)):
+		if(self.isLegal(x)):
+			self.gameWon()
 			self.trash.addFirst(x)
 			return True
 		return False
@@ -59,8 +61,10 @@ class theGame(object):
 	def flip(self):
 		if(self.deck.isEmpty()):
 			print "Can't flip"
-			return
-		self.trash.addFirst(deck.draw())
+			return Deck.Card("Joker", 0, True)
+		card = self.deck.draw()
+		self.trash.addFirst(card)
+		return card
 
 	def showAll(self):
 		print 'Deck: '
@@ -76,7 +80,8 @@ class theGame(object):
 			print self.pyramid[i],
 
 	def gameWon(self):
-		if len(self.pyramid == 0):
+		if (len(self.pyramid) == 0):
+			print "You have won!"
 			return True
 		else:
 			return False

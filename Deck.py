@@ -5,6 +5,9 @@ class Deck:
 	def __init__(self):
 		self.deck = []
 
+	def __len__(self):
+		return len(self.deck)
+
 	def fullDeck(self):
 		suit = ["H", "S", "D", "C"]
 		rank = range(1, 14)
