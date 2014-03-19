@@ -6,24 +6,25 @@ class theGame(object):
 		#Make full deck
 		deck = Deck.Deck()
 		deck.fullDeck()
-		#deck.shuffle() Not done becuse of unittesting
+		#deck.shuffle() Not done because of unittesting
+
 		pyramidObject = Pyramid.Pyramid(deck, height)
 		self.pyramid = pyramidObject.getCards() 	#Pyramid cards in list
 		self.deck = pyramidObject.getDeck()			#Rest of cards
 		self.trash = Deck.Deck()    				#Empty Deck	
 		self.sortsOn = sortsOn
 	
-	def checkSort(self, x): #x is a card
+	def checkColor(self, x): #x is a card
 		y = self.trash.show()
-		if((x.red and y.red) or (not x.red and not y.red)):
+		if((x.red and y.red) or (not x.red and not y.red)): #if both red or both black
 			return False
 		else:
 			return True
 	
-	def isLegal(self, x): #x is a card, h is a CardTree object
+	def isLegal(self, x): #x is a card
 		y = self.trash.show()
 		if(self.sortsOn):	
-			if(x.isAvailable() and checkSort(x)): #Still a mess
+			if(x.isAvailable() and checkColor(x)): #If card has no children and the colors are different
 				if(abs(x.rank - y.rank) == 1):
 					return True
 				elif(abs(x.rank - y.rank) == 12): #if ace and king or king and ace
@@ -37,13 +38,13 @@ class theGame(object):
 					return True
 			return False
 
-	def pick(self, x): #x is a card, h is CardTree
+	def pick(self, x): #x is a card
 		y = self.trash.show()
 		if(self.isLegal(x)):
-                        x.delete()
-			self.trash.addFirst(x)
-			self.pyramid.remove(x)
-			self.gameWon()
+			x.delete()
+			self.trash.addFirst(x) 		#add card to trash if legal
+			self.pyramid.remove(x)		#remove card from pyramid list
+			self.gameWon()				#check if game is over
 			return True
 		return False
 
@@ -51,11 +52,12 @@ class theGame(object):
 	def flip(self):
 		if(self.deck.isEmpty()):
 			print "Can't flip"
-			return Deck.Card("Joker", 0, True)
+			return Deck.Card("Joker", 100, True)
 		card = self.deck.draw()
 		self.trash.addFirst(card)
 		return card
 
+	#Prints out cards in all decks
 	def showAll(self):
 		print 'Deck: '
 		self.deck.showAll()
@@ -71,7 +73,7 @@ class theGame(object):
 
 	def gameWon(self):
 		if (len(self.pyramid) == 0):
-			print "You have won!"
+			print "You have won!"		#For now, only prints in console
 			return True
 		else:
 			return False
