@@ -52,6 +52,8 @@ class theGame(object):
 		y = self.trash.show()
 		if(isLegal(x)):
 			self.trash.addFirst(x)
+			return True
+		return False
 
 	#Draw from pile and add to trash
 	def flip(self):
@@ -76,6 +78,8 @@ class theGame(object):
 	def gameWon(self):
 		if len(self.pyramid == 0):
 			return True
+		else:
+			return False
 
 game = theGame(4)
 game.showAll()
