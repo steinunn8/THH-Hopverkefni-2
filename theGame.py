@@ -1,28 +1,17 @@
 import Deck
 import Pyramid
 
-"""NEW NEW NEW"""
-
 class theGame(object):
 	def __init__(self, height, sortsOn = False):
 		#Make full deck
 		deck = Deck.Deck()
 		deck.fullDeck()
-		#deck.shuffle()
+		#deck.shuffle() Not done becuse of unittesting
 		pyramidObject = Pyramid.Pyramid(deck, height)
-
 		self.pyramid = pyramidObject.getCards() 	#Pyramid cards in list
 		self.deck = pyramidObject.getDeck()			#Rest of cards
-		self.trash = Deck.Deck()    			#Empty Deck	
+		self.trash = Deck.Deck()    				#Empty Deck	
 		self.sortsOn = sortsOn
-
-
-	"""def positionDeck(self, deck):
-		for i in range(0, len(self.deck)):
-			card = deck.draw()
-			card.x = 450
-			card.y = 500
-			deck.addLast(card)"""
 	
 	def checkSort(self, x): #x is a card
 		y = self.trash.show()
