@@ -20,13 +20,13 @@ class test_Deck_Functions(unittest.TestCase):
 		self.assertEqual(card.isAvailable(), True)
 	
 class test_theGame_Functions(unittest.TestCase):
-	def test_checkSort(self):
+	def test_checkColor(self):
 		testGame = theGame.theGame(2)
 		testGame.flip()
 		cardX1 = Deck.Card("H", 1, True)
 		cardX2 = Deck.Card("S", 4, False)
-		self.assertEqual(testGame.checkSort(cardX1), False)
-		self.assertEqual(testGame.checkSort(cardX2), True)
+		self.assertEqual(testGame.checkColor(cardX1), False)
+		self.assertEqual(testGame.checkColor(cardX2), True)
 	def test_isLegal(self):
 		testGame = theGame.theGame(2)
 		testGame.flip()
