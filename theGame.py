@@ -42,7 +42,7 @@ class theGame(object):
 					return True
 			return False
 		else:
-			if(x.isAvailable()):
+			if(x.up):
 				if(abs(x.rank - y.rank) == 1):
 					return True
 				elif(abs(x.rank - y.rank) == 12): #if ace and king or king and ace
@@ -52,8 +52,11 @@ class theGame(object):
 	def pick(self, x): #x is a card, h is CardTree
 		y = self.trash.show()
 		if(self.isLegal(x)):
+                        print x
+                        #x.delete()
 			self.gameWon()
 			self.trash.addFirst(x)
+			
 			return True
 		return False
 

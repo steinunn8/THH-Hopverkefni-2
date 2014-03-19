@@ -61,7 +61,7 @@ class Card(object):
 		self.suit = Suit
 		self.rank = Rank
 		self.red = Red
-		self.up = False
+		self.up = True
 		self.left = None
 		self.right = None
 		self.rightParent = None
@@ -97,7 +97,7 @@ class Card(object):
 				master = parent.rightParent
 				magic = master.right
 				magic.left = self.right
-				self.right.rightParent = magic.left
+				self.right.rightParent = magic
 		else:
 			if(special):
 				self.right.insert_right(data,list,True)
@@ -106,11 +106,13 @@ class Card(object):
 	
 	def delete(self):
 		if self.rightParent is not None:
-			right_parent = self.rightParent
-			right_parent.left = None
+			#right_parent = self.rightParent
+			#right_parent.left = None
+                        self.rightParent.left = None
 		if self.leftParent is not None:
-			left_parent = self.leftParent
-			left_parent.right = None
+			#left_parent = self.leftParent
+			#left_parent.right = None
+			self.leftParent.right = None
 			
 	def isAvailable(self):
 		if(self.left is None and self.right is None):
@@ -127,10 +129,4 @@ class Card(object):
 hand = Deck()
 hand.fullDeck()
 hand.shuffle()
-"""for i in range(0, 52):
-		print hand.show(i),
-class Tree(object):
-	def __init__(self, Height):
-		self.height = Height
-"""
 
