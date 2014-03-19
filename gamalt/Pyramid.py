@@ -1,6 +1,6 @@
 import Deck
 		
-'''class CardTree(object):		
+class CardTree(object):		
 	def __init__(self, data, x=None, y=None):
 		self.left = None
 		self.right = None
@@ -9,7 +9,7 @@ import Deck
 		self.leftParent = None
 		self.x = x
 		self.y = y
-		self.data.up = False
+		self.up = False
 	
 	def insert_left(self, data, list):
 		if self.left is None:
@@ -52,12 +52,11 @@ import Deck
 		if(self.left is None and self.right is None):
 			return True
 		else:
-			return False
-		
+			return False	
 		
 	#Shows the card (for example temp.show() shows what card temp is)
 	def show(self):
-		return self.data'''
+		return self.data
 
 class Pyramid:
 	def __init__(self, deck, height):
@@ -65,10 +64,10 @@ class Pyramid:
 		self.deck = deck
 		
 		self.list = []
-		
-		self.root = self.deck.draw()#CardTree(self.deck.draw(),450,80)
+		self.root = self.deck.draw()
 		self.root.x = 450
 		self.root.y = 80
+		#self.root = CardTree(self.deck.draw(),450,80)
 		self.list.append(self.root)
 		
 		for i in range(0, self.height-1):
@@ -104,6 +103,8 @@ class Pyramid:
 	
 	def getCards(self):
 		return self.list
+
+
 		
 
 #test

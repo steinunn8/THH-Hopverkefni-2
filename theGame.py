@@ -71,10 +71,10 @@ class theGame(object):
 		
 		print 'Pyramid: '
 		for i in range(0, len(self.pyramid)):
-			print self.pyramid[i].data,
+			print self.pyramid[i],
 
 	def gameWon(self):
-		if len(self.pyramid == 0)
+		if len(self.pyramid == 0):
 			return True
 
 game = theGame(4)
