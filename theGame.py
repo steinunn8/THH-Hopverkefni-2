@@ -9,56 +9,57 @@ class theGame(object):
 		#Make full deck
 		deck = Deck.Deck()
 		deck.fullDeck()
-		deck.shuffle()
-		pyramidOb = PyramidTree.Pyramid(deck, height)
+		#deck.shuffle()
+		pyramidObject = Pyramid.Pyramid(deck, height)
 
-		self.pyramid = pyramidOb.getCards() 	#Pyramid cards in list
-		self.deck = pyramidOb.getDeck()			#Rest of cards
+		self.pyramid = pyramidObject.getCards() 	#Pyramid cards in list
+		self.deck = pyramidObject.getDeck()			#Rest of cards
 		self.trash = Deck.Deck()    			#Empty Deck	
 		self.sortsOn = sortsOn
 
 	def positionDeck(self, deck):
 		for i in range(0, len(deck)):
 			card = deck.draw()
-			card.x = 250
-			card.y = 300
+			card.x = 450
+			card.y = 500
 			deck.addLast(card)
 	
-	def checkSort(self, cardX, cardY):
-		x = cardX
-		y = cardY
-		if(x.red and y.red or not x.red and not y.red):
+	def checkSort(self, x): #x is a card
+		y = self.trash.show()
+		if((x.red and y.red) or (not x.red and not y.red)):
 			return False
 		else:
 			return True
+	
+	def isLegal(self, x): #x is a card, h is a CardTree object
+		y = self.trash.show()
+		if(sortsOn):	
+			if(x.isAvailable() and checkSort(x)): #Still a mess
+				if(abs(x.rank - y.rank) == 1):
+					return True
+				elif(abs(x.rank - y.rank) == 12): #if ace and king or king and ace
+					return True
+			return False
+		else:
+			if(x.isAvailable()):
+				if(abs(x.rank - y.rank) == 1):
+					return True
+				elif(abs(x.rank - y.rank) == 12): #if ace and king or king and ace
+					return True
+			return False
 
-	#Needs fixing!
-	def isLegal(self):
-		return True
+	def pick(self, x): #x is a card, h is CardTree
+		y = self.trash.show()
+		if(isLegal(x)):
+			self.trash.addFirst(x)
 
-#test:
-# test = theGame(3, True)
-# test.showAll()
-# test.draw() ...
-# test.pick(4) ...
-	
-"""
-# height is the number of rows, sortsOn = True is when the sort matters (only red can go and black and vice versa)
-class theGame(object):
-	def __init__(self, height, sortsOn=False):
-		self.deck = Deck.Deck()
-		self.deck.fullDeck()
-		self.deck.shuffle()
-		self.trash = Deck.Deck()
-		self.pyramid = Pyramid.Pyramid(height, self.deck)
-		self.sortsOn = sortsOn
-	
-	#the top(first) card in the deck is removed and put on top(first) of the trash deck
-	def draw(self):
-		self.trash.addFirst(self.deck.draw())
-		self.showAll() #remove this!
-	
-	#AUKA: all cards have been printed
+	#Draw from pile and add to trash
+	def flip(self):
+		if(self.deck.isEmpty()):
+			print "Can't flip"
+			return
+		self.trash.addFirst(deck.draw())
+
 	def showAll(self):
 		print 'Deck: '
 		self.deck.showAll()
@@ -69,40 +70,15 @@ class theGame(object):
 		print ' '
 		
 		print 'Pyramid: '
-		self.pyramid.showAll()
-	
-	#if pyramid[number] is available, then if it is legal it is removed from there and put on top(first) off trash, else returns False
-	def pick(self, number):
-		if(self.pyramid.isAvailable(number)) and (self.isLegal(number)):
-			self.trash.addFirst(self.pyramid.remove(number))
-			return True
-		else:
-			return False
-	
-	def checkSort(self, cardX, cardY):
-		X = cardX[0]
-		Y = cardY[0]
-		if(((X=="H")or(X=="D"))and((Y=="S")or(Y=="C"))) or (((Y=="H")or(Y=="D"))and((X=="S")or(X=="C"))):
-			return True
-		else:
-			return 
-def isLegal(self, number):
-		if not(self.pyramid.isAvailable(number)):
-			return False
-		
-		topTrash = self.trash.get(0)
-		pyramidCard = self.pyramid.get(number)
-		
-		if(abs(topTrash[1]-pyramidCard[1]) == 1):
-			if(self.sortsOn == False):
-				return True
-			else:
-				if(self.checkSort(topTrash, pyramidCard)):
-					return True
-		return False
+		for i in range(0, len(self.pyramid)):
+			print self.pyramid[i].data,
 
-	def quit(self):
-		exit()
-	
-	#def newGame(self):
-"""
+	def gameWon(self):
+		if len(self.pyramid == 0)
+			return True
+
+game = theGame(4)
+game.showAll()
+
+
+
