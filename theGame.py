@@ -51,7 +51,7 @@ class theGame(object):
 	#Draw from pile and add to trash
 	def flip(self):
 		if(self.deck.isEmpty()):
-			print "Can't flip"
+			print "You have lost!"
 			return Deck.Card("Joker", 100, True)
 		card = self.deck.draw()
 		self.trash.addFirst(card)

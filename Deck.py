@@ -5,9 +5,6 @@ class Deck:
 	def __init__(self):
 		self.deck = []
 
-	def __len__(self):
-		return len(self.deck)
-
 	def fullDeck(self):
 		suit = ["H", "S", "D", "C"]
 		rank = range(1, 14)
@@ -86,6 +83,7 @@ class Card(object):
 			self.left.insert_left(data,list)
 	
 	def insert_right(self, data, list, special=False):
+		#special is True if card has 2 parents, and those parents then need update
 		if self.right is None:
 			self.right = data
 			self.right.leftParent = self
@@ -93,11 +91,11 @@ class Card(object):
 			self.right.y = self.y+100
 			list.append(self.right)
 			if(special):
-				parent = self
-				master = parent.rightParent
-				magic = master.right
-				magic.left = self.right
-				self.right.rightParent = magic
+				parent = self #the data's left parent
+				master = parent.rightParent #the right parent of parent
+				magic = master.right #this card will be data's right parent
+				magic.left = self.right #update the right parent of data
+				self.right.rightParent = magic #now magic is the data's right parent
 		else:
 			if(special):
 				self.right.insert_right(data,list,True)
@@ -106,9 +104,11 @@ class Card(object):
 	
 	def delete(self):
 		if self.rightParent is not None:
-			self.rightParent.left = None
+			right_parent = self.rightParent
+			right_parent.left = None
 		if self.leftParent is not None:
-			self.leftParent.right = None
+			left_parent = self.leftParent
+			left_parent.right = None
 			
 	def isAvailable(self):
 		if(self.left is None and self.right is None):
@@ -121,5 +121,4 @@ class Card(object):
 	#Shows the card (for example temp.show() shows what card temp is)
 	def show(self):
 		return self.data
-
 
