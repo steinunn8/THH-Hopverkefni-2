@@ -1,11 +1,8 @@
-scores = []
-highScore = []
-
 def getScore(time, deckLength, pyramidLength, height, sortsOn, win):
 	timePoints = getTimePoints(time)
 	deckPoints = getDeckPoints(deckLength)
 	pyramidPoints = getPyrPoints(pyramidLength, height)
-	score = round(pyramidPoints + deckPoints + timePoints)
+	score = int(pyramidPoints + deckPoints + timePoints)
 	sortsOnMuliply = 3
 	winPoints = 10000
 	if(sortsOn):
@@ -19,7 +16,6 @@ def getScore(time, deckLength, pyramidLength, height, sortsOn, win):
 		else:
 			return score*height
 			
-
 def getTimePoints(time):
 	timeBonus = 180  #3 minutes
 	if(time > timeBonus):
@@ -37,8 +33,35 @@ def getOrigPyramidLength(height, count=0):
 	if(height == 0):
 		return count
 	return getOrigPyramidLength(height-1, count+height)
+		
+def getHighScores():
+	scores = getScores()
+	highScores = []
+	if(len(scores) < 5):
+		length = len(scores)
+	else:
+		length = 5
+	top = 0
+	for i in range(0,length):
+		top = max(scores)
+		highScores.append(top)
+		scores.remove(top)
+	return highScores
+
+def add(score):
+	scores = open('allScores.txt', 'a')
+	scores.write(score)	
+	scores.close()
 	
 def getScores():
-	global scores
-	for i in range(0, len(scores)):
-		print scores[i]
+	temp = open('allScores.txt', 'r+')
+	str = temp.read()
+	temp.close()
+	
+	listOfScores = str.splitlines()
+	scores = []
+	for i in range(0, len(listOfScores)):
+		scores.append(int(listOfScores[i]))
+	return scores
+	
+	

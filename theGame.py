@@ -80,12 +80,11 @@ class theGame(object):
 	def gameWon(self):
 		if (len(self.pyramid) == 0):
 			self.score = self.calculateScore(True)
-			Scores.scores.append(self.score)
-			print "You have won!"		#For now, only prints in console
+			Scores.add(str(self.score) + '\n')
+			print "You have won!"
 			print "You got: " + str(self.score) + " points!!"
-			print ' '
-			print 'All Scores:'
-			self.temp_getScores()  #to check what scores are being 'saved'
+			self.temp_getScores()
+			self.temp_getHighScores()
 			return True
 		else:
 			return False
@@ -97,5 +96,15 @@ class theGame(object):
 		return Scores.getScore(self.time, deckLength, pyramidLength, self.height, self.sortsOn, win)
 		
 	def temp_getScores(self):
-		Scores.getScores()
-
+		temp = Scores.getScores()
+		print ' '
+		print 'All Scores:'
+		for i in range(0, len(temp)):
+			print temp[i]
+	
+	def temp_getHighScores(self):
+		temp = Scores.getHighScores()
+		print ' '
+		print 'Highscore (top 5):'
+		for i in range(0, len(temp)):
+			print temp[i]
