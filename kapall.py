@@ -2,42 +2,20 @@ import wx, sys, os, pygame, random
 from pygame.locals import*
 import theGame
 
-# card displayed as a picture of a card
-# to use later with a card sprite
-class Card(pygame.sprite.Sprite):
-    def __init__(self):
-       # Call the parent class (Sprite) constructor
-       pygame.sprite.Sprite.__init__(self)
 
-       self.image = pygame.image.load("card.png")
-       self.rect = self.image.get_rect()
-       self.width, self.height = self.image.get_size()
-
-    def update(self):
-        return
-
-# temporary cards - cards displayed as numbers
-class TempCard(pygame.sprite.Sprite):
-    # common for all TempCards
-    black = (0,0,0)
-    red = (255,0,0)
-    
-    def __init__(self, pos, num, real_card):
+class SpriteCard(pygame.sprite.Sprite):
+    def __init__(self, pos, real_card):
         pygame.sprite.Sprite.__init__(self)
 
-        self.num = num
         self.orig_pos = pos
         self.real_card = real_card
-        
-        # set color to red if card is "facing up"
+
+        # set sprite image
         if (self.real_card.up):
-            self.color = self.red
+            self.image = real_card.image
         else:
-            self.color = self.black
-            
-        # "draw card"
-        self.font = pygame.font.SysFont("Arial", 70)
-        self.image = self.font.render(str(self.num), 1, self.color)
+             self.image = pygame.image.load('card_back.jpg')
+
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
@@ -52,15 +30,14 @@ class TempCard(pygame.sprite.Sprite):
                 self.rect.center = mouse_pos
                 app.frame.display.card_moving = True
             else:
+                # put front image if card is available
                 self.real_card.isAvailable()
                 if (self.real_card.up):
-                    # change color of card
-                    self.color = self.red
-                    self.image = self.font.render(str(self.num), 1, self.color)
+                    self.image = self.real_card.image
         else:
             # move the card to it's original position
             self.rect.center = self.orig_pos
-
+        
     
 class PygameDisplay(wx.Window):
     def __init__(self, parent, ID):
@@ -71,18 +48,18 @@ class PygameDisplay(wx.Window):
         self.size = self.GetSizeTuple()
         self.size_dirty = True
 
-        self.timer = wx.Timer(self)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_LEFT_DOWN, self.onMouseDown)
         self.Bind(wx.EVT_LEFT_UP, self.onMouseUp)
-       
+
+        # a timer to update on each frame
+        self.timer = wx.Timer(self)
         self.fps = 60.0
         self.timespacing = 1000.0 / self.fps
         self.timer.Start(self.timespacing, False)
 
-        # -------- game stuff begin ----------
-        
+        # game stuff     
         pygame.init()
         self.screen = pygame.Surface(self.size, 0, 32)
         self.mouse_down = False
@@ -90,20 +67,44 @@ class PygameDisplay(wx.Window):
         self.white = (255, 255, 255)
 
         self.start_game(game)
-        
-        # button to draw new card
-        self.draw_button = wx.Button(self, label="Draw new card", pos = (700, 500))
-        self.Bind(wx.EVT_BUTTON, self.drawNewCard, self.draw_button)
+
         self.Bind(wx.EVT_TIMER, self.Update, self.timer)
-
-        # -------- game stuff end ----------
         
+    def start_game(self, game):
+        self.game = game
+        
+        # groups for sprites
+        self.pyramid_cards = pygame.sprite.Group()
+        self.pile_cards = pygame.sprite.Group()
 
+        self.generate_deck()
+        self.generate_pyramid()
+
+    def generate_deck(self):
+         # deck to draw new card
+        self.deck_image_file = "card_back.jpg"
+        self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.draw_button = wx.BitmapButton(self, id=-1, bitmap=self.deck_image,
+            pos=(700, 500), size = (self.deck_image.GetWidth()+5, self.deck_image.GetHeight()+5))
+        self.Bind(wx.EVT_BUTTON, self.drawNewCard, self.draw_button)
+        
+        # make sprite for the top card in trash pile
+        self.fake_card = self.game.pyramid[0]
+        self.compare_card = SpriteCard([250, 300], self.fake_card)
+        self.pile_cards.add(self.compare_card)
+        self.draw_card()
+
+    def generate_pyramid(self):
+        for i in range(0, len(self.game.pyramid)):
+            self.card = self.game.pyramid[i]
+            self.pyramid_card = SpriteCard([self.card.x, self.card.y], self.card)
+            self.pyramid_cards.add(self.pyramid_card)
+        
     def Update(self, event):
         self.card_moving = False
 
         # update cards
-        self.tempCards.update()
+        self.pyramid_cards.update()
 
         # draw everything on screen
         self.Redraw()
@@ -118,7 +119,9 @@ class PygameDisplay(wx.Window):
         self.screen.fill(self.white)
 
         # draw the cards
-        self.allCards.draw(self.screen)
+        # we draw them in seperate groups to make sure that pyramid cards have a higher z-level
+        self.pile_cards.draw(self.screen)
+        self.pyramid_cards.draw(self.screen)
 
         # stuff to draw everything with wx/pygame combined
         s = pygame.image.tostring(self.screen, 'RGB')  # Convert the surface to an RGB string
@@ -144,16 +147,6 @@ class PygameDisplay(wx.Window):
         # This may or may not be necessary now that Pygame is just drawing to surfaces
         self.Unbind(event = wx.EVT_PAINT, handler = self.OnPaint)
         self.Unbind(event = wx.EVT_TIMER, handler = self.Update, source = self.timer)
-
-    def start_game(self, game):
-        self.game = game
-        
-        # groups for sprites
-        self.tempCards = pygame.sprite.Group()
-        self.allCards = pygame.sprite.Group()
-
-        self.generate_pyramid()
-        self.generate_deck()
         
     def onMouseDown(self, event):
         self.mouse_down = True
@@ -161,44 +154,36 @@ class PygameDisplay(wx.Window):
     def onMouseUp(self, event):
         self.mouse_down = False
 
+        self.check_card_to_deck()
+        
+    def check_card_to_deck(self):
         # check if card is moved to deck
-        for card in self.tempCards:
-            if self.compareCard.rect.colliderect(card.rect):
-                can_kill = self.game.pick(card.real_card)
+        for card in self.pyramid_cards:
+            if self.compare_card.rect.colliderect(card.rect): # if colliding
+                can_kill = self.game.pick(card.real_card)   # if correct card
                 if (can_kill):
-                    # set card to deck
-                    self.compareCard.kill()
-                    self.compareCard = TempCard([450, 500], str(card.real_card), card.real_card)
-                    self.allCards.add(self.compareCard)
-                    # remove card from pyramid
-                    card.kill()
+                    self.put_card_to_pile(card)
 
-    def generate_pyramid(self):
-        # make sprites for cards
-        for i in range(0, len(self.game.pyramid)):
-            self.card = self.game.pyramid[i]
-            self.tempCard = TempCard([self.card.x, self.card.y], str(self.card), self.card)
-            self.tempCards.add(self.tempCard)
-            self.allCards.add(self.tempCard)
-
-    def generate_deck(self):
-        # make sprite for top card in trash pile/last card drawn
-        self.compare_num = random.randint(0, 6)
-        self.compareCard = TempCard([250, 300], self.compare_num, self.card)
-        self.allCards.add(self.compareCard)
-        self.draw_card()
+    def put_card_to_pile(self, card):
+        # set card to deck
+        self.compare_card.kill()
+        self.compare_card = SpriteCard([450, 500], card.real_card)
+        self.pile_cards.add(self.compare_card)
+        # remove card from pyramid
+        card.kill()
 
     def drawNewCard(self, event):        
         self.draw_card()
 
     def draw_card(self):
         # remove last card
-        self.compareCard.kill()
+        self.compare_card.kill()
 
         # get new card from deck
-        newCard = self.game.flip()
-        self.compareCard = TempCard([newCard.x, newCard.y], str(newCard), newCard)
-        self.allCards.add(self.compareCard)
+        new_card = self.game.flip()
+        new_card.up = True
+        self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
+        self.pile_cards.add(self.compare_card)
         
          
 class Frame(wx.Frame):
@@ -220,13 +205,8 @@ class Frame(wx.Frame):
 
         self.SetMenuBar(menuBar)       
         self.SetTitle("Pyramid: First edition")
-       
-        self.timer = wx.Timer(self)
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
-        self.Bind(wx.EVT_TIMER, self.Update, self.timer)
-       
-        self.timer.Start((1000.0 / self.display.fps))
        
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.display, 1, flag = wx.EXPAND)
@@ -241,10 +221,6 @@ class Frame(wx.Frame):
  
     def OnSize(self, event):
         self.Layout()
-
-    def Update(self, event):
-        # has no activity yet
-        return
 
     def OnNewGame(self, event):
         self.game = theGame.theGame(4)

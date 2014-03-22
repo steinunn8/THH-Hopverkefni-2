@@ -1,21 +1,34 @@
 #Hopverkefni 2
-import random
+import random, sys, pygame
 
 class Deck:
 	def __init__(self):
 		self.deck = []
 
 	def fullDeck(self):
-		suit = ["H", "S", "D", "C"]
+		suit = ["D", "C", "H", "S"]
 		rank = range(1, 14)
+		sheet = pygame.image.load('cards.jpg')
+		x = 0
+		y = 0
+		width = 80
+		height = 124
 		for i in range(0, len(suit)):
 			for j in range(0, len(rank)):
+				# load sprite image
+				rect = pygame.Rect(x,y,width,height)
+				image = pygame.Surface(rect.size)
+				image.blit(sheet, (0, 0), rect)
+				x += 79
+				# make card
 				if(i == 0 or i == 2):
-					card = Card(suit[i], rank[j], True)
+					card = Card(suit[i], rank[j], True, image)
 					self.deck.append(card)
 				else:
-					card = Card(suit[i], rank[j], False)
-					self.deck.append(card)					
+					card = Card(suit[i], rank[j], False, image)
+					self.deck.append(card)
+			x = 0
+			y += 123
 
 	def shuffle(self):
 		random.shuffle(self.deck)
@@ -54,7 +67,7 @@ class Deck:
 		return self.deck[number].get()
 
 class Card(object):
-	def __init__(self, Suit, Rank, Red):
+	def __init__(self, Suit, Rank, Red, image):
 		self.suit = Suit
 		self.rank = Rank
 		self.red = Red
@@ -66,6 +79,7 @@ class Card(object):
 		#center of card
 		self.x = 450
 		self.y = 500
+		self.image = image
 
 	#When str() is used on Card, [X Y] will be the output 
 	#where X is the suit of the card and Y is the rank
@@ -121,4 +135,3 @@ class Card(object):
 	#Shows the card (for example temp.show() shows what card temp is)
 	def show(self):
 		return self.data
-

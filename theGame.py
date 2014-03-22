@@ -1,7 +1,5 @@
-import Deck
-import Pyramid
-import time
-import Scores
+import Deck, Pyramid, time, Scores
+import pygame
 
 class theGame(object):
 	def __init__(self, height, sortsOn = False):
@@ -59,7 +57,8 @@ class theGame(object):
 	def flip(self):
 		if(self.deck.isEmpty()):
 			print "You have lost!"
-			return Deck.Card("Joker", 100, True)
+			joker_img = pygame.image.load('joker.png')
+			return Deck.Card("Joker", 100, True, joker_img)
 		card = self.deck.draw()
 		self.trash.addFirst(card)
 		return card
