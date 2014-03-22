@@ -1,5 +1,7 @@
 import Deck
 import Pyramid
+import time
+import Scores
 
 class theGame(object):
 	def __init__(self, height, sortsOn = False):
@@ -13,6 +15,11 @@ class theGame(object):
 		self.deck = pyramidObject.getDeck()			#Rest of cards
 		self.trash = Deck.Deck()    				#Empty Deck	
 		self.sortsOn = sortsOn
+		
+		self.height = height
+		self.start = time.clock()
+		self.time = 0
+		self.score = 0
 	
 	def checkColor(self, x): #x is a card
 		y = self.trash.show()
@@ -73,8 +80,23 @@ class theGame(object):
 
 	def gameWon(self):
 		if (len(self.pyramid) == 0):
+			self.score = self.calculateScore(True)
+			Scores.scores.append(self.score)
 			print "You have won!"		#For now, only prints in console
+			print "You got: " + str(self.score) + " points!!"
+			print ' '
+			print 'All Scores:'
+			self.temp_getScores()  #to check what scores are being 'saved'
 			return True
 		else:
 			return False
+	
+	def calculateScore(self, win=False):
+		self.time = time.clock() - self.start
+		deckLength = len(self.deck.deck)
+		pyramidLength = len(self.pyramid)
+		return Scores.getScore(self.time, deckLength, pyramidLength, self.height, self.sortsOn, win)
+		
+	def temp_getScores(self):
+		Scores.getScores()
 
