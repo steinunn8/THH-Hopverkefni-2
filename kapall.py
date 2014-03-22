@@ -48,7 +48,6 @@ class PygameDisplay(wx.Window):
         self.size = self.GetSizeTuple()
         self.size_dirty = True
 
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_LEFT_DOWN, self.onMouseDown)
         self.Bind(wx.EVT_LEFT_UP, self.onMouseUp)
@@ -66,9 +65,7 @@ class PygameDisplay(wx.Window):
         self.card_moving = False
         self.white = (255, 255, 255)
 
-        self.start_game(game)
-
-        self.Bind(wx.EVT_TIMER, self.Update, self.timer)
+        #self.start_game(game)
         
     def start_game(self, game):
         self.game = game
@@ -79,6 +76,9 @@ class PygameDisplay(wx.Window):
 
         self.generate_deck()
         self.generate_pyramid()
+
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_TIMER, self.Update, self.timer)
 
     def generate_deck(self):
          # deck to draw new card
@@ -188,7 +188,8 @@ class PygameDisplay(wx.Window):
          
 class Frame(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, -1, size = (900, 700))      
+        wx.Frame.__init__(self, parent, -1, size = (900, 700))
+        wx.Frame.CenterOnScreen(self)
         self.display = PygameDisplay(self, -1)
        
         self.Bind(wx.EVT_SIZE, self.OnSize)
@@ -225,19 +226,43 @@ class Frame(wx.Frame):
     def OnNewGame(self, event):
         self.game = theGame.theGame(4)
         self.display.start_game(self.game)
-           
+
+class LevelFrame(wx.Frame):
+    def __init__(self, parent):
+        wx.Frame.__init__(self, parent, -1, 'Choose level', size = (400, 400))
+        wx.Frame.CenterOnScreen(self)
+
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        self.start_game_button = wx.Button(self, label="Start game", pos = (150,150), size= (100, 50))
+        self.Bind(wx.EVT_BUTTON, self.start_game, self.start_game_button)
+        self.sizer.Add(self.start_game_button, 0, wx.ALIGN_BOTTOM, 5)
+
+    def start_game(self, event):
+        app.frame.display.start_game(game)
+        self.Destroy()
+        
+    def OnSize(self, event):
+        self.Layout()
+        
      
 class App(wx.App):
     def OnInit(self):
+        # game window
         self.frame = Frame(parent = None)
         self.frame.Show()
         self.SetTopWindow(self.frame)
+
+        # level window
+        self.level_frame = LevelFrame(parent = None)
+        self.level_frame.Show()
        
         return True
 
     
 if __name__ == "__main__":
-    game = theGame.theGame(4)
-    
+    game = theGame.theGame(4)  
     app = App()
     app.MainLoop()
