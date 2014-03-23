@@ -83,8 +83,6 @@ class theGame(object):
 			Scores.add(str(self.score) + '\n')
 			print "You have won!"
 			print "You got: " + str(self.score) + " points!!"
-			self.temp_getScores()
-			self.temp_getHighScores()
 			return True
 		else:
 			return False
@@ -95,16 +93,5 @@ class theGame(object):
 		pyramidLength = len(self.pyramid)
 		return Scores.getScore(self.time, deckLength, pyramidLength, self.height, self.sortsOn, win)
 		
-	def temp_getScores(self):
-		temp = Scores.getScores()
-		print ' '
-		print 'All Scores:'
-		for i in range(0, len(temp)):
-			print temp[i]
-	
-	def temp_getHighScores(self):
-		temp = Scores.getHighScores()
-		print ' '
-		print 'Highscore (top 5):'
-		for i in range(0, len(temp)):
-			print temp[i]
+		
+		

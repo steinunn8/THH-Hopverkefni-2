@@ -1,6 +1,6 @@
 import wx, sys, os, pygame, random
 from pygame.locals import*
-import theGame
+import theGame, Scores
 
 
 class SpriteCard(pygame.sprite.Sprite):
@@ -203,6 +203,10 @@ class Frame(wx.Frame):
         menuBar.Append(menu, "&File")
         m_new_game = menu.Append(wx.ID_ABOUT, "&New Game", "Start a new game.")
         self.Bind(wx.EVT_MENU, self.OnNewGame, m_new_game)
+        #-----Johanna trying to make highscore option in menu bar but  doesnt know how to pop up a window----
+        m_show_highscore = menu.Append(wx.ID_PREVIEW, "&High Score", "See top 5 scores.")
+        self.Bind(wx.EVT_MENU, self.getHighScores, m_show_highscore)
+        #-----Johanna out-----
 
         self.SetMenuBar(menuBar)       
         self.SetTitle("Pyramid: First edition")
@@ -226,6 +230,15 @@ class Frame(wx.Frame):
     def OnNewGame(self, event):
         self.game = theGame.theGame(4)
         self.display.start_game(self.game)
+
+	#this should rather pop up a window .. :(
+    def getHighScores(self, event):
+        #temp is an array with 5 numbers (the top 5 score)
+		temp = Scores.getHighScores()
+        print " "
+        print "Highscore (top 5):"
+        for i in range(0, len(temp)):
+            print temp[i]
 
 class LevelFrame(wx.Frame):
     def __init__(self, parent):
