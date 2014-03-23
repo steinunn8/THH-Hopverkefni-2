@@ -207,9 +207,12 @@ class Frame(wx.Frame):
         m_show_highscore = menu.Append(wx.ID_PREVIEW, "&High Score", "See top 5 scores.")
         self.Bind(wx.EVT_MENU, self.getHighScores, m_show_highscore)
         #-----Johanna out-----
+        m_help = menu.Append(wx.ID_HELP, "&Help", "Get help.")
+        self.Bind(wx.EVT_MENU, self.getHelp, m_help)
+
 
         self.SetMenuBar(menuBar)       
-        self.SetTitle("Pyramid: First edition")
+        self.SetTitle("Pyramid: Second edition")
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
        
@@ -240,6 +243,10 @@ class Frame(wx.Frame):
         for i in range (0,len(temp)):
             print temp[i]
 
+    def getHelp(self, event):
+        self.help_frame = HelpFrame(parent = None)
+        self.help_frame.Show()
+
 class LevelFrame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, 'Choose level', size = (400, 400))
@@ -248,13 +255,32 @@ class LevelFrame(wx.Frame):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        
         self.start_game_button = wx.Button(self, label="Start game", pos = (150,150), size= (100, 50))
         self.Bind(wx.EVT_BUTTON, self.start_game, self.start_game_button)
         self.sizer.Add(self.start_game_button, 0, wx.ALIGN_BOTTOM, 5)
 
     def start_game(self, event):
         app.frame.display.start_game(game)
+        self.Destroy()
+        
+    def OnSize(self, event):
+        self.Layout()
+
+
+class HelpFrame(wx.Frame):
+    def __init__(self, parent):
+        wx.Frame.__init__(self, parent, -1, 'Help', size = (400, 400))
+        wx.Frame.CenterOnScreen(self)
+
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        #self.texti = wx.TextCtrl(parent, id= ID_ANY, value="Text, text, text, text, text,...............", size=(250,250), style=wx.TE_READONLY|wx.TE_MULTILINE|wx.TE_NO_VSCROLL|wx.BORDER_NONE) 
+        self.ok_button = wx.Button(self, label="Ok, got it!", pos = (150,250), size= (100, 50))
+        self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
+        self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)
+
+    def okClicked(self, event):
         self.Destroy()
         
     def OnSize(self, event):
