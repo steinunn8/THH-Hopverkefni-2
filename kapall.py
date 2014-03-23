@@ -234,10 +234,10 @@ class Frame(wx.Frame):
 	#this should rather pop up a window .. :(
     def getHighScores(self, event):
         #temp is an array with 5 numbers (the top 5 score)
-		temp = Scores.getHighScores()
+        temp = Scores.getHighScores()
         print " "
         print "Highscore (top 5):"
-        for i in range(0, len(temp)):
+        for i in range (0,len(temp)):
             print temp[i]
 
 class LevelFrame(wx.Frame):
