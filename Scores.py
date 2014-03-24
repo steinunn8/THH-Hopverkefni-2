@@ -17,7 +17,8 @@ class score(object):
 		deckPoints = self.getDeckPoints()
 		pyramidPoints = self.getPyrPoints()
 		winPoints = self.getWinPoints()
-		
+		#print "Time" + timePoints
+		#print "" + deckPoints
 		return timePoints + deckPoints + pyramidPoints + winPoints
 				
 	def getCurrentPoints(self):
@@ -55,9 +56,9 @@ class score(object):
 		winPoints = 1000
 		if(win):
 			if(sortsOn):
-				winPoints*sortsOnMultiply
+				return int(winPoints*sortsOnMultiply)
 			else:
-				winPoints
+				return int(winPoints)
 		else:
 			return 0
 	
@@ -127,7 +128,7 @@ class score(object):
 		if(secondsLeft < 10):
                         self.bonusTime = 'Timebonus: ' + '0' + str(self.bonus_minutes) + ':0' + str(secondsLeft)
 		else:
-                        self.bonusTime = 'Timebonus: ' + '0' + str(self.bonus_minutes) + ':' + str(secondsLeft)
+                        self.bonusTime = 'Timebonus :' + '0' + str(self.bonus_minutes) + ':' + str(secondsLeft)
 
 		if (secondsLeft <= 0):
 			self.startTime = time.time()
@@ -136,3 +137,16 @@ class score(object):
 	
 	def getBonusTime(self):
 		return self.bonusTime
+
+	def getDivided(self):
+		time = self.getTimePoints()
+		deck = self.getDeckPoints()
+		pyr = self.getPyrPoints()
+		win = self.getWinPoints()
+
+		sTime = '\t' + str(time) + " points for being quick. \n"
+		sDeck = '\t' + str(deck) + " points for having many cards left in the deck. \n"
+		sPyr = '\t' + str(pyr) + " points for removing pyramid cards. \n"
+		sWin = '\t' + str(win) + " points for being quick. \n"
+
+		return sTime + sDeck + sPyr + sWin
