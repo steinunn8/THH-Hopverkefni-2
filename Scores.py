@@ -3,8 +3,8 @@ import time, threading
 class score(object):
 	def __init__(self, aGame):
 		self.game = aGame
-		self.allScores = self.getAllScores #necessary?
-		self.highScores = self.getHighScores #necessary?
+		#self.allScores = self.getAllScores #necessary?
+		#self.highScores = self.getHighScores #necessary?
 		self.bonusTime = ''
 		self.startTime = time.time()
 		self.bonus_seconds = 60
@@ -105,12 +105,12 @@ class score(object):
 		
 	def getHighScoreString(self):
 		list = self.getHighScores()
-		one =  '1. ' + str(list[0]) + '\n'
-		two =  '2. ' + str(list[1]) + '\n'
-		three = '3. ' + str(list[2]) + '\n'
-		four =  '4. ' + str(list[3]) + '\n'
-		five =  '5. ' + str(list[4]) + '\n'
-		return one + two + three + four + five
+		for i in range(0, len(list)):
+			list[i] = (str(i+1) + '. ' + str(list[i]) + '\n')
+		tempString = ''
+		for i in range(0, len(list)):
+			tempString = tempString + list[i]
+		return tempString
 	
 	def startBonusTime(self):
 		timer = threading.Timer(1.0, self.startBonusTime)
