@@ -262,7 +262,7 @@ class Frame(wx.Frame):
 
     def getHighScores(self, event):
         #temp is an array with 5 numbers (the top 5 score)
-        temp = Scores.getHighScores()
+        temp = Scores.getHighScoreString()
         self.high_score_frame = HighScoreFrame(parent = None, temp = temp)
         self.high_score_frame.Show()
 
@@ -319,12 +319,8 @@ class HighScoreFrame(wx.Frame):
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        temptemp = ""
-        for i in range(0, len(temp)):
-            temptemp = temptemp + str(temp[i]) + " "
-        #self.text = wx.TextCtrl(parent, id= ID_ANY, value="Text, text, text, text, text,...............", size=(250,250), style=wx.TE_READONLY|wx.TE_MULTILINE|wx.TE_NO_VSCROLL|wx.BORDER_NONE) 
-        #self.text = wx.TextCtrl(self, value=temp, pos=(50, 50), size=(250,150), style=wx.TE_READONLY|wx.TE_MULTILINE|wx.TE_NO_VSCROLL|wx.BORDER_NONE)
-        self.text = wx.StaticText(self, -1, temptemp)
+        self.head = wx.StaticText(self, -1, "\n High Scores" + "\n \n" + temp)
+        #self.text = wx.StaticText(self, 0, "\t 1. " + str(temp[0]) + "\n \t 2. " + str(temp[1]))
         self.ok_button = wx.Button(self, label="Ok, got it!", pos = (150,250), size= (100, 50))
         self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
         self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)

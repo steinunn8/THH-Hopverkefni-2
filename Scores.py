@@ -110,12 +110,12 @@ def getHelp():
 	return string
 	
 def getHighScoreString():
-	list = getHighScore()
-	one =  '1. ' + str(list[0]) + '\n'
-	two =  '2. ' + str(list[1]) + '\n'
-	three = '3. ' + str(list[2]) + '\n'
-	four =  '4. ' + str(list[3]) + '\n'
-	five =  '5. ' + str(list[4]) + '\n'
+	listT = getHighScores()
+	one =  '\t 1. ' + str(listT[0]) + '\n'
+	two =  '\t 2. ' + str(listT[1]) + '\n'
+	three = '\t 3. ' + str(listT[2]) + '\n'
+	four =  '\t 4. ' + str(listT[3]) + '\n'
+	five =  '\t 5. ' + str(listT[4]) + '\n'
 	return one + two + three + four + five
 	
 
