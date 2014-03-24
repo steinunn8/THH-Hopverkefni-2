@@ -7,8 +7,8 @@ class score(object):
 		#self.highScores = self.getHighScores #necessary?
 		self.bonusTime = ''
 		self.startTime = time.time()
-		self.bonus_seconds = 60
-		self.bonus_minutes = 2
+		self.bonus_seconds = 0
+		self.bonus_minutes = 3
 		self.startBonusTime()
 		
 		
@@ -132,7 +132,7 @@ class score(object):
 
 		if (secondsLeft <= 0):
 			self.startTime = time.time()
-			self.bonus_seconds = 59
+			self.bonus_seconds = 60
 			self.bonus_minutes -= 1
 	
 	def getBonusTime(self):
