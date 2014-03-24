@@ -123,6 +123,8 @@ class PygameDisplay(wx.Window):
         self.pile_cards.draw(self.screen)
         self.pyramid_cards.draw(self.screen)
 
+        self.draw_points()
+
         # stuff to draw everything with wx/pygame combined
         s = pygame.image.tostring(self.screen, 'RGB')  # Convert the surface to an RGB string
         img = wx.ImageFromData(self.size[0], self.size[1], s)  # Load this string into a wx image
@@ -196,6 +198,18 @@ class PygameDisplay(wx.Window):
             self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
             self.pile_cards.add(self.compare_card)
             self.last_compare_card = self.compare_card
+
+    def draw_points(self):
+        self.points = Scores.getCurrentPoints(self.game)
+        black = (0,0,0)
+        pos = (50, 600)
+        
+        # draw points
+        self.points_font = pygame.font.SysFont("Arial", 30)
+        self.points_image = self.points_font.render(str(self.points), 1, black)
+        self.points_rect = self.points_image.get_rect()
+        self.points_rect.center = pos
+        self.screen.blit(self.points_image, self.points_rect)
         
          
 class Frame(wx.Frame):
@@ -256,6 +270,7 @@ class Frame(wx.Frame):
         temp = Scores.getHelp()
         self.help_frame = HelpFrame(parent = None, temp = temp)
         self.help_frame.Show()
+    
 
 class LevelFrame(wx.Frame):
     def __init__(self, parent):

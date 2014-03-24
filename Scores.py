@@ -18,7 +18,7 @@ def getScore(time, deckLength, pyramidLength, height, sortsOn, win):
 
 def getCurrentPoints(aGame):
 	pyramidLength = len(aGame.pyramid)
-	heigth = aGame.height
+	height = aGame.height
 	sortsOn = aGame.sortsOn
 	return getPyrPoints(pyramidLength, height, sortsOn)
 
