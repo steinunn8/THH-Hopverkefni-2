@@ -313,20 +313,20 @@ class HelpFrame(wx.Frame):
         
 class HighScoreFrame(wx.Frame):
     def __init__(self, parent, temp):
-        wx.Frame.__init__(self, parent, -1, 'High Score', size = (400, 400))
+        wx.Frame.__init__(self, parent, -1, 'High Score', size = (200, 200))
         wx.Frame.CenterOnScreen(self)
         self.SetBackgroundColour('#FFFFFF')
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.head = wx.StaticText(self, -1, "\n High Scores" + "\n \n" + temp)
+        self.head = wx.StaticText(self, -1, '\n    High Score: Top 5 scores \n \n' + temp)
         #self.text = wx.StaticText(self, 0, "\t 1. " + str(temp[0]) + "\n \t 2. " + str(temp[1]))
-        self.ok_button = wx.Button(self, label="Ok, got it!", pos = (150,250), size= (100, 50))
-        self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
-        self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)
+        #self.ok_button = wx.Button(self, label="Ok, got it!", pos = (150,250), size= (100, 50))
+        #self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
+        #self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)
 
-    def okClicked(self, event):
-        self.Destroy()
+    #def okClicked(self, event):
+     #   self.Destroy()
         
     def OnSize(self, event):
         self.Layout()
