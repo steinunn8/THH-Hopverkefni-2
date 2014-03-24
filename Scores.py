@@ -128,7 +128,7 @@ class score(object):
 		if(secondsLeft < 10):
                         self.bonusTime = 'Timebonus: ' + '0' + str(self.bonus_minutes) + ':0' + str(secondsLeft)
 		else:
-                        self.bonusTime = 'Timebonus :' + '0' + str(self.bonus_minutes) + ':' + str(secondsLeft)
+                        self.bonusTime = 'Timebonus: ' + '0' + str(self.bonus_minutes) + ':' + str(secondsLeft)
 
 		if (secondsLeft <= 0):
 			self.startTime = time.time()

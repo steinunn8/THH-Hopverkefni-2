@@ -71,7 +71,7 @@ class PygameDisplay(wx.Window):
         self.game = game
         
         # groups for sprites
-        self.pyramid_cards = pygame.sprite.Group()
+        self.pyramid_cards = pygame.sprite.OrderedUpdates()
         self.pile_cards = pygame.sprite.Group()
 
         self.generate_deck()
@@ -85,7 +85,7 @@ class PygameDisplay(wx.Window):
         self.deck_image_file = "card_back.jpg"
         self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         self.draw_button = wx.BitmapButton(self, id=-1, bitmap=self.deck_image,
-            pos=(700, 500), size = (self.deck_image.GetWidth()+5, self.deck_image.GetHeight()+5))
+            pos=(700, 510), size = (self.deck_image.GetWidth()+5, self.deck_image.GetHeight()+5))
         self.Bind(wx.EVT_BUTTON, self.drawNewCard, self.draw_button)
         
         # make sprite for the top card in trash pile
@@ -125,7 +125,7 @@ class PygameDisplay(wx.Window):
 
         self.draw_points()
         self.draw_bonustime()
-
+        
         # stuff to draw everything with wx/pygame combined
         s = pygame.image.tostring(self.screen, 'RGB')  # Convert the surface to an RGB string
         img = wx.ImageFromData(self.size[0], self.size[1], s)  # Load this string into a wx image
@@ -170,11 +170,10 @@ class PygameDisplay(wx.Window):
     def put_card_to_pile(self, card):
         # set card to deck
         self.compare_card.kill()
-        self.compare_card = SpriteCard([450, 500], card.real_card)
+        self.compare_card = SpriteCard([self.last_compare_card.real_card.x, self.last_compare_card.real_card.y], card.real_card)
         self.pile_cards.add(self.compare_card)
         # remove card from pyramid
         card.kill()
-        self.game_won()
 
     def drawNewCard(self, event):        
         self.draw_card()
@@ -216,6 +215,7 @@ class PygameDisplay(wx.Window):
 	
     def draw_bonustime(self):
         self.bonustime = self.game.scoreThing.getBonusTime()
+        #self.bonustime = str(Scores.getBonusTime())
         black = (0,0,0)
         pos = (780, 50)
         
@@ -225,17 +225,8 @@ class PygameDisplay(wx.Window):
         self.bonustime_rect = self.bonustime_image.get_rect()
         self.bonustime_rect.center = pos
         self.screen.blit(self.bonustime_image, self.bonustime_rect)
-
-    def game_won(self):
-        print "You called game_won"
-        if len(self.pyramid_cards.sprites()) == 0:
-            print "No more cards"
-            total = str(self.game.scoreThing.getScore())
-            divided = self.game.scoreThing.getDivided()
-            self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided)
-            self.post_score_frame.Show()      
         
-        
+         
 class Frame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, size = (900, 700))
@@ -295,22 +286,79 @@ class Frame(wx.Frame):
 
 class LevelFrame(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, -1, 'Choose level', size = (400, 400))
+        wx.Frame.__init__(self, parent, -1, 'Choose level')
         wx.Frame.CenterOnScreen(self)
-
-        self.Bind(wx.EVT_SIZE, self.OnSize)
+        
+        self.grid = wx.GridBagSizer(hgap=3, vgap=3)
         
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.start_game_button = wx.Button(self, label="Start game", pos = (150,150), size= (100, 50))
+        
+        self.fyrirsogn = wx.StaticText(self, label="Choose a level") #pos = (140,20)
+        self.fyrirsognFont = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.NORMAL)
+        self.fyrirsogn.SetFont(self.fyrirsognFont)
+        self.sizer.Add(self.fyrirsogn, flag=wx.ALL|wx.EXPAND, border=20)
+        
+        self.level1 = wx.RadioButton(self, -1, "Level 1 : 5 rows and color doesn't matter")
+        self.grid.Add(self.level1, pos=(0,0), span=(1,2))
+        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level1)
+        
+        self.level2 = wx.RadioButton(self, -1, "Level 2 : 6 rows and color doesn't matter")
+        self.grid.Add(self.level2, pos=(1,0))
+        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level2)
+        
+        self.level3 = wx.RadioButton(self, -1, "Level 3 : 7 rows and color doesn't matter")
+        self.grid.Add(self.level3, pos=(2,0))
+        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level3)
+        
+        self.level4 = wx.RadioButton(self, -1, "Level 4 : 5 rows and color matters")
+        self.grid.Add(self.level4, pos=(0,3))
+        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level4)
+        
+        self.level5 = wx.RadioButton(self, -1, "Level 5 : 6 rows and color matters")
+        self.grid.Add(self.level5, pos=(1,3))
+        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level5)
+        
+        self.level6 = wx.RadioButton(self, -1, "Level 6 : 7 rows and color matters")
+        self.grid.Add(self.level6, pos=(2,3))
+        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level6)
+        
+        self.sizer.Add(self.grid, flag=wx.ALL|wx.EXPAND, border=10)
+        
+        
+        self.start_game_button = wx.Button(self, label="Start game", size= (100, 50))
         self.Bind(wx.EVT_BUTTON, self.start_game, self.start_game_button)
-        self.sizer.Add(self.start_game_button, 0, wx.ALIGN_BOTTOM, 5)
+        self.sizer.Add(self.start_game_button, 0, wx.ALIGN_CENTER, 20)
+
+        self.height = 7
+        self.sortsOn = True
+        
+        self.SetSizerAndFit(self.sizer)
 
     def start_game(self, event):
-        app.frame.display.start_game(game)
-        self.Destroy()
-        
-    def OnSize(self, event):
-        self.Layout()
+    	global game
+    	game = theGame.theGame(self.height, self.sortsOn)
+    	app.frame.display.start_game(game)
+    	self.Destroy()
+    
+    def Levels(self, event):
+        if(event.Id == -2013):
+            self.height = 5
+            self.sortsOn = False
+        if(event.Id == -2014):
+            self.height = 6
+            self.sortsOn = False
+        if(event.Id == -2015):
+            self.height = 7
+            self.sortsOn = False
+        if(event.Id == -2016):
+            self.height = 5
+            self.sortsOn = True
+        if(event.Id == -2017):
+            self.height = 6
+            self.sortsOn = True
+        if(event.Id == -2018):
+            self.height = 7
+            self.sortsOn = True
 
 
 class HelpFrame(wx.Frame):
@@ -341,19 +389,13 @@ class HighScoreFrame(wx.Frame):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.head = wx.StaticText(self, -1, '\n    High Score: Top 5 scores \n \n' + temp)
-        
-    def OnSize(self, event):
-        self.Layout()
+        #self.text = wx.StaticText(self, 0, "\t 1. " + str(temp[0]) + "\n \t 2. " + str(temp[1]))
+        #self.ok_button = wx.Button(self, label="Ok, got it!", pos = (150,250), size= (100, 50))
+        #self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
+        #self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)
 
-class PostHighScoreFrame(wx.Frame):
-    def __init__(self, parent, total, divided):
-        wx.Frame.__init__(self, parent, -1, 'Your score', size = (400, 400))
-        wx.Frame.CenterOnScreen(self)
-        self.SetBackgroundColour('#FFFFFF')
-
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.text = wx.StaticText(self, -1, '\n     You got ' + total + ' points \n Your points divide like this:'+ divided)
+    #def okClicked(self, event):
+     #   self.Destroy()
         
     def OnSize(self, event):
         self.Layout()

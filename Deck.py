@@ -79,7 +79,7 @@ class Card(object):
 		self.leftParent = None
 		#center of card
 		self.x = 450
-		self.y = 500
+		self.y = 570
 		self.image = image
 
 	#When str() is used on Card, [X Y] will be the output 
@@ -91,8 +91,8 @@ class Card(object):
 		if self.left is None:
 			self.left = data
 			self.left.rightParent = self
-			self.left.x = self.x-80
-			self.left.y = self.y+100
+			self.left.x = self.x-60
+			self.left.y = self.y+60
 			list.append(self.left)
 		else:
 			self.left.insert_left(data,list)
@@ -102,8 +102,8 @@ class Card(object):
 		if self.right is None:
 			self.right = data
 			self.right.leftParent = self
-			self.right.x = self.x+80
-			self.right.y = self.y+100
+			self.right.x = self.x+60
+			self.right.y = self.y+60
 			list.append(self.right)
 			if(special):
 				parent = self #the data's left parent

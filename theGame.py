@@ -32,7 +32,7 @@ class theGame(object):
 	def isLegal(self, x): #x is a card
 		y = self.trash.show()
 		if(self.sortsOn):	
-			if(x.isAvailable() and checkColor(x)): #If card has no children and the colors are different
+			if(x.isAvailable() and self.checkColor(x)): #If card has no children and the colors are different
 				if(abs(x.rank - y.rank) == 1):
 					return True
 				elif(abs(x.rank - y.rank) == 12): #if ace and king or king and ace
