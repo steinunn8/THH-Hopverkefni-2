@@ -179,11 +179,23 @@ class PygameDisplay(wx.Window):
         # remove last card
         self.compare_card.kill()
 
-        # get new card from deck
-        new_card = self.game.flip()
-        new_card.up = True
-        self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
-        self.pile_cards.add(self.compare_card)
+        if (game.deck.isEmpty()):
+            # display a joker on the deck if it's empty
+            self.deck_image_file = "joker.png"        
+            self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+            self.draw_button.SetBitmapLabel(self.deck_image)
+
+            # display last card in pile
+            new_card = self.game.flip()
+            self.compare_card = self.last_compare_card;
+            self.pile_cards.add(self.compare_card)
+        else:
+            # get new card from deck
+            new_card = self.game.flip()
+            new_card.up = True
+            self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
+            self.pile_cards.add(self.compare_card)
+            self.last_compare_card = self.compare_card
         
          
 class Frame(wx.Frame):
