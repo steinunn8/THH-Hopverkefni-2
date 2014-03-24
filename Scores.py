@@ -1,4 +1,4 @@
-import os, time
+import time
 bonusTime = ''
 	
 #ekki ok
@@ -30,7 +30,6 @@ def startBonusTime():
 	s=0
 	m=3
 	while m>=0:
-		os.system('cls')
 		if(s < 10):
 			bonusTime =  'Timebonus: ' + '0' + str(m) + ':0' + str(s)
 		else:
