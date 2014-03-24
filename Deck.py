@@ -68,7 +68,7 @@ class Deck:
 		return self.deck[number].get()
 
 class Card(object):
-	def __init__(self, Suit, Rank, Red, image):
+	def __init__(self, Suit, Rank, Red, image=None):
 		self.suit = Suit
 		self.rank = Rank
 		self.red = Red
