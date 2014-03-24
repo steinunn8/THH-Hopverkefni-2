@@ -300,7 +300,7 @@ class LevelFrame(wx.Frame):
         
         self.level1 = wx.RadioButton(self, -1, "Level 1 : 5 rows and color doesn't matter")
         self.grid.Add(self.level1, pos=(0,0), span=(1,2))
-        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level1)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level1, 1)
         
         self.level2 = wx.RadioButton(self, -1, "Level 2 : 6 rows and color doesn't matter")
         self.grid.Add(self.level2, pos=(1,0))
@@ -341,25 +341,24 @@ class LevelFrame(wx.Frame):
     	self.Destroy()
     
     def Levels(self, event):
-        if(event.Id == -2013):
+        if(event.Id == 1):
             self.height = 5
             self.sortsOn = False
-        if(event.Id == -2014):
+        if(event.Id == 2):
             self.height = 6
             self.sortsOn = False
-        if(event.Id == -2015):
+        if(event.Id == 3):
             self.height = 7
             self.sortsOn = False
-        if(event.Id == -2016):
+        if(event.Id == 4):
             self.height = 5
             self.sortsOn = True
-        if(event.Id == -2017):
+        if(event.Id == 5):
             self.height = 6
             self.sortsOn = True
-        if(event.Id == -2018):
+        if(event.Id == 6):
             self.height = 7
             self.sortsOn = True
-
 
 class HelpFrame(wx.Frame):
     def __init__(self, parent, temp):
