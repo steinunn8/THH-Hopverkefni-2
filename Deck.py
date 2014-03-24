@@ -1,6 +1,7 @@
 #Hopverkefni 2
 import random, sys, pygame
 
+#thorhildur prof fyrir netbeans pull
 class Deck:
 	def __init__(self):
 		self.deck = []
