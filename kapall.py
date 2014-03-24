@@ -246,19 +246,15 @@ class Frame(wx.Frame):
         self.game = theGame.theGame(4)
         self.display.start_game(self.game)
 
-	#this should rather pop up a window .. :(
     def getHighScores(self, event):
         #temp is an array with 5 numbers (the top 5 score)
         temp = Scores.getHighScores()
         self.high_score_frame = HighScoreFrame(parent = None, temp = temp)
         self.high_score_frame.Show()
-        print " "
-        print "Highscore (top 5):"
-        for i in range (0,len(temp)):
-            print temp[i]
 
     def getHelp(self, event):
-        self.help_frame = HelpFrame(parent = None)
+        temp = Scores.getHelp()
+        self.help_frame = HelpFrame(parent = None, temp = temp)
         self.help_frame.Show()
 
 class LevelFrame(wx.Frame):
@@ -282,15 +278,15 @@ class LevelFrame(wx.Frame):
 
 
 class HelpFrame(wx.Frame):
-    def __init__(self, parent):
-        wx.Frame.__init__(self, parent, -1, 'Help', size = (400, 400))
+    def __init__(self, parent, temp):
+        wx.Frame.__init__(self, parent, -1, 'Help', size = (500, 600))
         wx.Frame.CenterOnScreen(self)
-
         self.Bind(wx.EVT_SIZE, self.OnSize)
-        
+        self.SetBackgroundColour('#FFFFFF')
+
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        #self.texti = wx.TextCtrl(parent, id= ID_ANY, value="Text, text, text, text, text,...............", size=(250,250), style=wx.TE_READONLY|wx.TE_MULTILINE|wx.TE_NO_VSCROLL|wx.BORDER_NONE) 
-        self.ok_button = wx.Button(self, label="Ok, got it!", pos = (150,250), size= (100, 50))
+        self.text = wx.StaticText(self, -1, temp)
+        self.ok_button = wx.Button(self, label="Ok, got it!", pos = (200,500), size= (100, 50))
         self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
         self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)
 
@@ -304,11 +300,16 @@ class HighScoreFrame(wx.Frame):
     def __init__(self, parent, temp):
         wx.Frame.__init__(self, parent, -1, 'High Score', size = (400, 400))
         wx.Frame.CenterOnScreen(self)
+        self.SetBackgroundColour('#FFFFFF')
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
-        
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        #self.texti = wx.TextCtrl(parent, id= ID_ANY, value="Text, text, text, text, text,...............", size=(250,250), style=wx.TE_READONLY|wx.TE_MULTILINE|wx.TE_NO_VSCROLL|wx.BORDER_NONE) 
+        temptemp = ""
+        for i in range(0, len(temp)):
+            temptemp = temptemp + str(temp[i]) + " "
+        #self.text = wx.TextCtrl(parent, id= ID_ANY, value="Text, text, text, text, text,...............", size=(250,250), style=wx.TE_READONLY|wx.TE_MULTILINE|wx.TE_NO_VSCROLL|wx.BORDER_NONE) 
+        #self.text = wx.TextCtrl(self, value=temp, pos=(50, 50), size=(250,150), style=wx.TE_READONLY|wx.TE_MULTILINE|wx.TE_NO_VSCROLL|wx.BORDER_NONE)
+        self.text = wx.StaticText(self, -1, temptemp)
         self.ok_button = wx.Button(self, label="Ok, got it!", pos = (150,250), size= (100, 50))
         self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
         self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)

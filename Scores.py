@@ -63,5 +63,14 @@ def getScores():
 	for i in range(0, len(listOfScores)):
 		scores.append(int(listOfScores[i]))
 	return scores
+
+def getHelp():
+	temp = open('help.txt', 'r')
+	string = temp.read()
+	temp.close()
+
+	return string
+	
+
 	
 	

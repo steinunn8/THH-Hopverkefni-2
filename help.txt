@@ -1,0 +1,29 @@
+Do you need help? Here you go!
+
+Before you start the game you can chose one of six levels.
+
+	Level 1: 5 rows in the pyramid and color does not matter.
+	Level 2: 6 rows in the pyramid and color does not matter.
+	Level 3: 7 rows in the pyramid and color does not matter.
+	Level 4: 5 rows in the pyramid and color does matter.
+	Level 5: 6 rows in the pyramid and color does matter.
+	Level 6: 7 rows in the pyramid and color does matter.
+	
+"Color does not matter" chosen:
+
+	One card is facing up on the bottom of the screen in the beginning.
+	You can move cards form the pyramid onto this card if the 
+	card value is on higher or on lower than the card on the bottom.
+	You can also match king to ace and ace to king.
+	If no card facing up in the pyramid is one higher or one lower than 
+	the card on the bottom, you can pick a new card from the deck.
+	When you have all the cards from the pyramid in your bottom pile: 
+				You have WON!
+	If your deck on the right is empty before you have 
+	the whole pyramid in your pile, you have lost.
+	
+"Color does matter" chosen:
+
+	Same rules as in "Color does not matter" but your card from 
+	the pyramid needs to be of the opposite color.
+	For example: You can put red 3 and red 5 to a black 4.
