@@ -67,8 +67,12 @@ class PygameDisplay(wx.Window):
 
         #self.start_game(game)
         
-    def start_game(self, game):
+    def start_game(self, game, height, sortsOn):
         self.game = game
+        self.height = height
+        self.sortsOn = sortsOn
+        self.start_time = 0
+        self.minutes = 0
         
         # groups for sprites
         self.pyramid_cards = pygame.sprite.OrderedUpdates()
@@ -125,6 +129,7 @@ class PygameDisplay(wx.Window):
 
         self.draw_points()
         self.draw_bonustime()
+        self.draw_time()
         
         # stuff to draw everything with wx/pygame combined
         s = pygame.image.tostring(self.screen, 'RGB')  # Convert the surface to an RGB string
@@ -216,7 +221,6 @@ class PygameDisplay(wx.Window):
 	
     def draw_bonustime(self):
         self.bonustime = self.game.scoreThing.getBonusTime()
-        #self.bonustime = str(Scores.getBonusTime())
         black = (0,0,0)
         pos = (780, 50)
         
@@ -226,6 +230,35 @@ class PygameDisplay(wx.Window):
         self.bonustime_rect = self.bonustime_image.get_rect()
         self.bonustime_rect.center = pos
         self.screen.blit(self.bonustime_image, self.bonustime_rect)
+
+    def draw_time(self):
+        # get seconds
+        self.elapsed_time = int(self.game.getTime()) - self.start_time
+        
+        # get minutes
+        if (self.elapsed_time >= 60):
+            self.start_time = int(self.game.getTime())
+            self.minutes += 1
+            
+        # time text
+        if (self.elapsed_time < 10 and self.minutes < 10):
+            self.time = "Time played: 0" + str(self.minutes) + ":0" + str(self.elapsed_time)
+        elif (self.elapsed_time < 10 and self.minutes >= 10):
+            self.time = "Time played: " + str(self.minutes) + ":0" + str(self.elapsed_time)
+        elif (self.elapsed_time >= 10 and self.minutes < 10):
+            self.time = "Time played: 0" + str(self.minutes) + ":" + str(self.elapsed_time)
+        elif (self.elapsed_time >= 10 and self.minutes >= 10):
+            self.time = "Time played: " + str(self.minutes) + ":" + str(self.elapsed_time)
+
+        # display time
+        black = (0,0,0)
+        pos = (100, 50)
+        
+        self.time_font = pygame.font.SysFont("Arial", 20)
+        self.time_image = self.time_font.render(str(self.time), 1, black)
+        self.time_rect = self.time_image.get_rect()
+        self.time_rect.center = pos
+        self.screen.blit(self.time_image, self.time_rect)
 
     def game_won(self):
         if len(self.pyramid_cards.sprites()) == 0:
@@ -277,8 +310,9 @@ class Frame(wx.Frame):
         self.Layout()
 
     def OnNewGame(self, event):
-        self.game = theGame.theGame(4)
-        self.display.start_game(self.game)
+        #self.game = theGame.theGame(4)
+        self.game = theGame.theGame(app.frame.display.height, app.frame.display.sortsOn)
+        self.display.start_game(self.game, app.frame.display.height, app.frame.display.sortsOn)
 
     def getHighScores(self, event):
         temp = self.display.game.scoreThing.getHighScoreString()
@@ -344,7 +378,7 @@ class LevelFrame(wx.Frame):
     def start_game(self, event):
     	global game
     	game = theGame.theGame(self.height, self.sortsOn)
-    	app.frame.display.start_game(game)
+    	app.frame.display.start_game(game, self.height, self.sortsOn)
     	self.Destroy()
     
     def Levels(self, event):
