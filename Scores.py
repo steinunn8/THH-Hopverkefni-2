@@ -13,6 +13,7 @@ class score(object):
 		timePoints = self.getTimePoints()
 		deckPoints = self.getDeckPoints()
 		pyramidPoints = self.getPyrPoints()
+		winPoints = 5
 		
 		sortsOnMultiply = 2
 		
@@ -103,3 +104,6 @@ class score(object):
 		four =  '4. ' + str(list[3]) + '\n'
 		five =  '5. ' + str(list[4]) + '\n'
 		return one + two + three + four + five
+
+	def getDivided(self):
+		return "whooop"
