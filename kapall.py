@@ -174,6 +174,7 @@ class PygameDisplay(wx.Window):
         self.pile_cards.add(self.compare_card)
         # remove card from pyramid
         card.kill()
+        self.game_won()
 
     def drawNewCard(self, event):        
         self.draw_card()
@@ -225,7 +226,13 @@ class PygameDisplay(wx.Window):
         self.bonustime_rect = self.bonustime_image.get_rect()
         self.bonustime_rect.center = pos
         self.screen.blit(self.bonustime_image, self.bonustime_rect)
-        
+
+    def game_won(self):
+        if len(self.pyramid_cards.sprites()) == 0:
+            total = str(self.game.scoreThing.getScore())
+            divided = self.game.scoreThing.getDivided()
+            self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided)
+            self.post_score_frame.Show()  
          
 class Frame(wx.Frame):
     def __init__(self, parent):
@@ -388,17 +395,24 @@ class HighScoreFrame(wx.Frame):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.head = wx.StaticText(self, -1, '\n    High Score: Top 5 scores \n \n' + temp)
-        #self.text = wx.StaticText(self, 0, "\t 1. " + str(temp[0]) + "\n \t 2. " + str(temp[1]))
-        #self.ok_button = wx.Button(self, label="Ok, got it!", pos = (150,250), size= (100, 50))
-        #self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
-        #self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)
-
-    #def okClicked(self, event):
-     #   self.Destroy()
         
     def OnSize(self, event):
         self.Layout()
-     
+
+class PostHighScoreFrame(wx.Frame):
+    def __init__(self, parent, total, divided):
+        wx.Frame.__init__(self, parent, -1, 'Your score', size = (400, 400))
+        wx.Frame.CenterOnScreen(self)
+        self.SetBackgroundColour('#FFFFFF')
+
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.text = wx.StaticText(self, -1, '\n     You got ' + total + ' points \n Your points divide like this:'+ divided)
+        
+    def OnSize(self, event):
+        self.Layout()
+
+
 class App(wx.App):
     def OnInit(self):
         # game window
