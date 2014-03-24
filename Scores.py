@@ -1,3 +1,6 @@
+import os, time
+bonusTime = ''
+	
 #ekki ok
 def getScore(time, deckLength, pyramidLength, height, sortsOn, win):
 	timePoints = getTimePoints(time)
@@ -21,7 +24,27 @@ def getCurrentPoints(aGame):
 	height = aGame.height
 	sortsOn = aGame.sortsOn
 	return getPyrPoints(pyramidLength, height, sortsOn)
+	
+def startBonusTime():
+	global bonusTime
+	s=0
+	m=3
+	while m>=0:
+		os.system('cls')
+		if(s < 10):
+			bonusTime =  'Timebonus: ' + '0' + str(m) + ':0' + str(s)
+		else:
+			bonusTime = 'Timebonus: ' + '0' + str(m) + ':' + str(s)
+		time.sleep(1)
+		if s==0:
+			m-=1
+			s=60
+		s-=1
 
+def getBonusTime():
+	global bonusTime
+	return bonusTime
+	
 #ok	
 def getTimePoints(time):
 	timeBonus = 180  #3 minutes

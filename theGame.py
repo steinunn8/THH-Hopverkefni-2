@@ -16,6 +16,7 @@ class theGame(object):
 		
 		self.height = height
 		self.start = time.clock()
+		Scores.startBonusTime()
 		self.time = 0
 		self.score = 0
 	
