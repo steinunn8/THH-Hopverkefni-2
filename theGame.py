@@ -16,9 +16,11 @@ class theGame(object):
 		
 		self.height = height
 		self.start = time.clock()
-		Scores.startBonusTime()
+		#Scores.startBonusTime()
 		self.time = 0
-		self.score = 0
+		#self.score = 0
+		self.win = False
+		self.scoreThing = Scores.score(self)
 	
 	def checkColor(self, x): #x is a card
 		y = self.trash.show()
@@ -80,19 +82,18 @@ class theGame(object):
 
 	def gameWon(self):
 		if (len(self.pyramid) == 0):
-			self.score = self.calculateScore(True)
-			Scores.add(str(self.score) + '\n')
+			score = self.scoreThing.getScore()
+			self.scoreThing.add(str(score) + '\n')
+			self.win = True
 			print "You have won!"
-			print "You got: " + str(self.score) + " points!!"
+			print "You got: " + str(score) + " points!!"
+			print "You took " + str(self.getTime()) + "seconds"
 			return True
 		else:
 			return False
-	
-	def calculateScore(self, win=False):
+
+	def getTime(self):
 		self.time = time.clock() - self.start
-		deckLength = len(self.deck.deck)
-		pyramidLength = len(self.pyramid)
-		return Scores.getScore(self.time, deckLength, pyramidLength, self.height, self.sortsOn, win)
+		return self.time
 		
-		
-		
+	

@@ -200,7 +200,8 @@ class PygameDisplay(wx.Window):
             self.last_compare_card = self.compare_card
 
     def draw_points(self):
-        self.points = Scores.getCurrentPoints(self.game)
+        #self.points = Scores.getCurrentPoints(self.game)
+        self.points = self.game.scoreThing.getCurrentPoints()
         black = (0,0,0)
         pos = (50, 600)
         
@@ -229,10 +230,8 @@ class Frame(wx.Frame):
         menuBar.Append(menu, "&File")
         m_new_game = menu.Append(wx.ID_ABOUT, "&New Game", "Start a new game.")
         self.Bind(wx.EVT_MENU, self.OnNewGame, m_new_game)
-        #-----Johanna trying to make highscore option in menu bar but  doesnt know how to pop up a window----
         m_show_highscore = menu.Append(wx.ID_PREVIEW, "&High Score", "See top 5 scores.")
         self.Bind(wx.EVT_MENU, self.getHighScores, m_show_highscore)
-        #-----Johanna out-----
         m_help = menu.Append(wx.ID_HELP, "&Help", "Get help.")
         self.Bind(wx.EVT_MENU, self.getHelp, m_help)
 
@@ -261,13 +260,12 @@ class Frame(wx.Frame):
         self.display.start_game(self.game)
 
     def getHighScores(self, event):
-        #temp is an array with 5 numbers (the top 5 score)
-        temp = Scores.getHighScoreString()
+        temp = self.display.game.scoreThing.getHighScoreString()
         self.high_score_frame = HighScoreFrame(parent = None, temp = temp)
         self.high_score_frame.Show()
 
     def getHelp(self, event):
-        temp = Scores.getHelp()
+        temp = self.display.game.scoreThing.getHelp()
         self.help_frame = HelpFrame(parent = None, temp = temp)
         self.help_frame.Show()
     
