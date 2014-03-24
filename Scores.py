@@ -1,60 +1,66 @@
-import time
+import time, threading
 
 class score(object):
 	def __init__(self, aGame):
 		self.game = aGame
-		self.allScores = self.getScores
-		self.highScores = self.getHighScores
+		self.allScores = self.getAllScores #necessary?
+		self.highScores = self.getHighScores #necessary?
+		self.bonusTime = ''
+		self.startTime = time.time()
+		self.bonus_seconds = 60
+		self.bonus_minutes = 2
+		self.startBonusTime()
+		
 		
 	def getScore(self):
-		sortsOn = self.game.sortsOn
-		win = self.game.win
-		
 		timePoints = self.getTimePoints()
 		deckPoints = self.getDeckPoints()
 		pyramidPoints = self.getPyrPoints()
-		winPoints = 5
+		winPoints = self.getWinPoints()
 		
-		sortsOnMultiply = 2
-		
-		if(sortsOn):
-			if(win):
-				return int(sortsOnMuliply*(pyramidPoints + winPoints) + deckPoints + timePoints)
-			else:
-				return int(sortsOnMuliply*pyramidPoints + deckPoints + timePoints)
-		else:
-			if(win):
-				return int(pyramidPoints + winPoints + deckPoints + timePoints)
-			else:
-				return int(pyramidPoints + deckPoints + timePoints)
-
-	#kristin needs to change kapall because its a self-thingie not agame				
+		return timePoints + deckPoints + pyramidPoints + winPoints
+				
 	def getCurrentPoints(self):
 		pyramidLength = len(self.game.pyramid)
 		height = self.game.height
 		sortsOn = self.game.sortsOn
-		return self.getPyrPoints() #pyramidLength, height, sortsOn
+		points = "Score: " + str(self.getPyrPoints())
+		return points
 
 	def getTimePoints(self):
 		time = self.game.time
 		timeBonus = 180  #3 minutes
 		if(time > timeBonus):
 			return 0
-		return (timeBonus-time)*10
+		return int((timeBonus-time)*10)
 
 	def getDeckPoints(self):
 		deckLength = len(self.game.deck.deck)
-		return deckLength*100
+		return int(deckLength*100)
 
 	def getPyrPoints(self):
 		pyramidLength = len(self.game.pyramid)
 		height = self.game.height
-		sortsOn = self.game.sortsOn
 		origPyrLength = self.getOrigPyramidLength(height)
+		sortsOn = self.game.sortsOn
+		sortsOnMultiply = 2
 		if(sortsOn):
-			return (origPyrLength - pyramidLength)*1000*2
-		return (origPyrLength - pyramidLength)*1000
+			return int((origPyrLength - pyramidLength)*1000)*sortsOnMultiply
+		return int((origPyrLength - pyramidLength)*1000)
 
+	def getWinPoints(self):
+		sortsOnMultiply = 2
+		sortsOn = self.game.sortsOn
+		win = self.game.win
+		winPoints = 1000
+		if(win):
+			if(sortsOn):
+				winPoints*sortsOnMultiply
+			else:
+				winPoints
+		else:
+			return 0
+	
 	def getOrigPyramidLength(self, height, count=0):
 		if(height == 0):
 			return count
@@ -65,7 +71,7 @@ class score(object):
 		scores.write(score)	
 		scores.close()
 
-	def getScores(self):
+	def getAllScores(self):
 		temp = open('allScores.txt', 'r+')
 		str = temp.read()
 		temp.close()
@@ -77,7 +83,7 @@ class score(object):
 		return scores
 		
 	def getHighScores(self):
-		scores = self.getScores()
+		scores = self.getAllScores()
 		highScores = []
 		if(len(scores) < 5):
 			length = len(scores)
@@ -104,6 +110,29 @@ class score(object):
 		four =  '4. ' + str(list[3]) + '\n'
 		five =  '5. ' + str(list[4]) + '\n'
 		return one + two + three + four + five
+	
+	def startBonusTime(self):
+		timer = threading.Timer(1.0, self.startBonusTime)
+		timer.start()
+		
+		elapsedTime = int(time.time() - self.startTime)
+		secondsLeft = self.bonus_seconds - elapsedTime
+		
+		if (self.bonus_minutes < 0):
+			timer.cancel()
+			threading.Event().set()
+			secondsLeft = 0
+			return
+			
+		if(secondsLeft < 10):
+                        self.bonusTime = 'Timebonus: ' + '0' + str(self.bonus_minutes) + ':0' + str(secondsLeft)
+		else:
+                        self.bonusTime = 'Timebonus: ' + '0' + str(self.bonus_minutes) + ':' + str(secondsLeft)
 
-	def getDivided(self):
-		return "whooop"
+		if (secondsLeft <= 0):
+			self.startTime = time.time()
+			self.bonus_seconds = 59
+			self.bonus_minutes -= 1
+	
+	def getBonusTime(self):
+		return self.bonusTime

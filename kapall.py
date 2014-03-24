@@ -124,6 +124,7 @@ class PygameDisplay(wx.Window):
         self.pyramid_cards.draw(self.screen)
 
         self.draw_points()
+        self.draw_bonustime()
 
         # stuff to draw everything with wx/pygame combined
         s = pygame.image.tostring(self.screen, 'RGB')  # Convert the surface to an RGB string
@@ -204,7 +205,7 @@ class PygameDisplay(wx.Window):
         #self.points = Scores.getCurrentPoints(self.game)
         self.points = self.game.scoreThing.getCurrentPoints()
         black = (0,0,0)
-        pos = (50, 600)
+        pos = (70, 600)
         
         # draw points
         self.points_font = pygame.font.SysFont("Arial", 30)
@@ -212,6 +213,18 @@ class PygameDisplay(wx.Window):
         self.points_rect = self.points_image.get_rect()
         self.points_rect.center = pos
         self.screen.blit(self.points_image, self.points_rect)
+	
+    def draw_bonustime(self):
+        self.bonustime = self.game.scoreThing.getBonusTime()
+        black = (0,0,0)
+        pos = (780, 50)
+        
+        # draw points
+        self.bonustime_font = pygame.font.SysFont("Arial", 20)
+        self.bonustime_image = self.bonustime_font.render(str(self.bonustime), 1, black)
+        self.bonustime_rect = self.bonustime_image.get_rect()
+        self.bonustime_rect.center = pos
+        self.screen.blit(self.bonustime_image, self.bonustime_rect)
 
     def game_won(self):
         print "You called game_won"
