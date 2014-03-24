@@ -60,19 +60,15 @@ class PygameDisplay(wx.Window):
 
         # game stuff     
         pygame.init()
-        self.screen = pygame.Surface(self.size, 0, 32)
+        self.screen = pygame.Surface(self.size, 0, 32)      
+        
+    def start_game(self, game):
+        self.game = game
+        self.start_time = 0
+        self.minutes = 0
         self.mouse_down = False
         self.card_moving = False
         self.white = (255, 255, 255)
-
-        #self.start_game(game)
-        
-    def start_game(self, game, height, sortsOn):
-        self.game = game
-        self.height = height
-        self.sortsOn = sortsOn
-        self.start_time = 0
-        self.minutes = 0
         
         # groups for sprites
         self.pyramid_cards = pygame.sprite.OrderedUpdates()
@@ -310,9 +306,8 @@ class Frame(wx.Frame):
         self.Layout()
 
     def OnNewGame(self, event):
-        #self.game = theGame.theGame(4)
-        self.game = theGame.theGame(app.frame.display.height, app.frame.display.sortsOn)
-        self.display.start_game(self.game, app.frame.display.height, app.frame.display.sortsOn)
+        app.level_frame = LevelFrame(parent = None)
+        app.level_frame.Show()
 
     def getHighScores(self, event):
         temp = self.display.game.scoreThing.getHighScoreString()
@@ -378,7 +373,7 @@ class LevelFrame(wx.Frame):
     def start_game(self, event):
     	global game
     	game = theGame.theGame(self.height, self.sortsOn)
-    	app.frame.display.start_game(game, self.height, self.sortsOn)
+    	app.frame.display.start_game(game)
     	self.Destroy()
     
     def Levels(self, event):
