@@ -298,27 +298,27 @@ class LevelFrame(wx.Frame):
         self.fyrirsogn.SetFont(self.fyrirsognFont)
         self.sizer.Add(self.fyrirsogn, flag=wx.ALL|wx.EXPAND, border=20)
         
-        self.level1 = wx.RadioButton(self, -1, "Level 1 : 5 rows and color doesn't matter")
+        self.level1 = wx.RadioButton(self, 1, "Level 1 : 5 rows and color doesn't matter")
         self.grid.Add(self.level1, pos=(0,0), span=(1,2))
-        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level1, 1)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level1)
         
-        self.level2 = wx.RadioButton(self, -1, "Level 2 : 6 rows and color doesn't matter")
+        self.level2 = wx.RadioButton(self, 2, "Level 2 : 6 rows and color doesn't matter")
         self.grid.Add(self.level2, pos=(1,0))
         self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level2)
         
-        self.level3 = wx.RadioButton(self, -1, "Level 3 : 7 rows and color doesn't matter")
+        self.level3 = wx.RadioButton(self, 3, "Level 3 : 7 rows and color doesn't matter")
         self.grid.Add(self.level3, pos=(2,0))
         self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level3)
         
-        self.level4 = wx.RadioButton(self, -1, "Level 4 : 5 rows and color matters")
+        self.level4 = wx.RadioButton(self, 4, "Level 4 : 5 rows and color matters")
         self.grid.Add(self.level4, pos=(0,3))
         self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level4)
         
-        self.level5 = wx.RadioButton(self, -1, "Level 5 : 6 rows and color matters")
+        self.level5 = wx.RadioButton(self, 5, "Level 5 : 6 rows and color matters")
         self.grid.Add(self.level5, pos=(1,3))
         self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level5)
         
-        self.level6 = wx.RadioButton(self, -1, "Level 6 : 7 rows and color matters")
+        self.level6 = wx.RadioButton(self, 6, "Level 6 : 7 rows and color matters")
         self.grid.Add(self.level6, pos=(2,3))
         self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level6)
         
