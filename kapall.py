@@ -455,7 +455,7 @@ class PostHighScoreFrame(wx.Frame):
     def pandaGif(self):
         # Gif part
         gif_file = "panda.gif"
-        self.gif = wx.animate.GIFAnimationCtrl(self.gif_panel, -1, gif_file, pos=(10, 10))
+        self.gif = wx.animate.GIFAnimationCtrl(self.gif_panel, -1, gif_file, pos=(2, 200))
         # clears the background
         self.gif.GetPlayer().UseBackgroundColour(True)
         # continuously loop through the frames of the gif file (default)
