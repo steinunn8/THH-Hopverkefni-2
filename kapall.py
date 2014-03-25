@@ -1,4 +1,5 @@
 import wx, sys, os, pygame, random
+import wx.animate
 from pygame.locals import*
 import theGame, Scores
 
@@ -319,7 +320,6 @@ class Frame(wx.Frame):
         self.help_frame = HelpFrame(parent = None, temp = temp)
         self.help_frame.Show()
     
-
 class LevelFrame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, 'Choose level')
@@ -428,19 +428,38 @@ class HighScoreFrame(wx.Frame):
     def OnSize(self, event):
         self.Layout()
 
+
 class PostHighScoreFrame(wx.Frame):
     def __init__(self, parent, total, divided):
-        wx.Frame.__init__(self, parent, -1, 'Your score', size = (400, 400))
+        wx.Frame.__init__(self, parent, -1, 'Game over!', size = (500,530))
         wx.Frame.CenterOnScreen(self)
         self.SetBackgroundColour('#FFFFFF')
+        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.gif_panel = wx.Panel(self, -1, size = (500,530))
+        self.score_panel = wx.Panel(self, -1, size = (500,100))
+        #self.score_panel.SetBackgroundColour("indigo")
+        self.bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.bottom_sizer.Add(self.score_panel,0, wx.EXPAND)
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.text = wx.StaticText(self, -1, '\n     You got ' + total + ' points \n Your points divide like this:'+ divided)
-        
+        # Score part:
+        self.text = wx.StaticText(self.score_panel, -1,'\n     You got ' + total + ' points \n Your points divide like this:\n'+ divided)
+        self.text.Wrap(1000)
+        self.pandaGif()
+        self.main_sizer.Add(self.gif_panel,0)
+        self.main_sizer.Add(self.bottom_sizer,0)
+        self.main_sizer.Fit(self)
     def OnSize(self, event):
         self.Layout()
 
+    def pandaGif(self):
+        # Gif part
+        gif_file = "panda.gif"
+        self.gif = wx.animate.GIFAnimationCtrl(self.gif_panel, -1, gif_file, pos=(10, 10))
+        # clears the background
+        self.gif.GetPlayer().UseBackgroundColour(True)
+        # continuously loop through the frames of the gif file (default)
+        self.gif.Play()
 
 class App(wx.App):
     def OnInit(self):
