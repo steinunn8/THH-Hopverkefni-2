@@ -398,13 +398,13 @@ class LevelFrame(wx.Frame):
 
 class HelpFrame(wx.Frame):
     def __init__(self, parent, temp):
-        wx.Frame.__init__(self, parent, -1, 'Help', size = (500, 600))
+        wx.Frame.__init__(self, parent, -1, 'Help', size = (500, 700))
         wx.Frame.CenterOnScreen(self)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.SetBackgroundColour('#FFFFFF')
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.text = wx.StaticText(self, -1, temp)
+        self.text = wx.StaticText(self, -1, temp, style=wx.ALIGN_LEFT, size=(500, 500))
         self.ok_button = wx.Button(self, label="Ok, got it!", pos = (200,500), size= (100, 50))
         self.Bind(wx.EVT_BUTTON, self.okClicked, self.ok_button )
         self.sizer.Add(self.ok_button , 0, wx.ALIGN_BOTTOM, 5)
@@ -436,19 +436,20 @@ class PostHighScoreFrame(wx.Frame):
         self.SetBackgroundColour('#FFFFFF')
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         self.gif_panel = wx.Panel(self, -1, size = (500,530))
-        self.score_panel = wx.Panel(self, -1, size = (500,100))
+        self.score_panel = wx.Panel(self, -1, size = (500,200))
         #self.score_panel.SetBackgroundColour("indigo")
         self.bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.bottom_sizer.Add(self.score_panel,0, wx.EXPAND)
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
         # Score part:
-        self.text = wx.StaticText(self.score_panel, -1,'\n     You got ' + total + ' points \n Your points divide like this:\n'+ divided)
+        self.text = wx.StaticText(self.score_panel, -1,'\n     You got ' + total + ' points \n     Your points divide like this:\n'+ divided, style=wx.ALIGN_LEFT)
         self.text.Wrap(1000)
         self.pandaGif()
         self.main_sizer.Add(self.gif_panel,0)
         self.main_sizer.Add(self.bottom_sizer,0)
         self.main_sizer.Fit(self)
+    
     def OnSize(self, event):
         self.Layout()
 
@@ -471,6 +472,14 @@ class App(wx.App):
         # level window
         self.level_frame = LevelFrame(parent = None)
         self.level_frame.Show()
+
+        #test for win window
+        """"game = theGame.theGame(4, False)
+        score = Scores.score(game)
+        total = str(score.getScore())
+        divided = score.getDivided()
+        self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided)
+        self.post_score_frame.Show()"""  
        
         return True
 

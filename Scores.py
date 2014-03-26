@@ -144,9 +144,9 @@ class score(object):
 		pyr = self.getPyrPoints()
 		win = self.getWinPoints()
 
-		sTime = '\t' + str(time) + " points for being quick. \n"
-		sDeck = '\t' + str(deck) + " points for having many cards left in the deck. \n"
-		sPyr = '\t' + str(pyr) + " points for removing pyramid cards. \n"
-		sWin = '\t' + str(win) + " points for being quick. \n"
+		sTime = '          ' + str(time) + " points for being quick. \n"
+		sDeck = '          ' + str(deck) + " points for having many cards left in the deck. \n"
+		sPyr = '          ' + str(pyr) + " points for removing pyramid cards. \n"
+		sWin = '          ' + str(win) + " points for winning the game. \n"
 
 		return sTime + sDeck + sPyr + sWin
