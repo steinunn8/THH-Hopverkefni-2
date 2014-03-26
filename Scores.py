@@ -3,8 +3,6 @@ import time, threading
 class score(object):
 	def __init__(self, aGame):
 		self.game = aGame
-		#self.allScores = self.getAllScores #necessary?
-		#self.highScores = self.getHighScores #necessary?
 		self.bonusTime = ''
 		self.startTime = time.time()
 		self.bonus_seconds = 0
@@ -35,7 +33,7 @@ class score(object):
 
 	def getDeckPoints(self):
 		deckLength = len(self.game.deck.deck)
-		return int(deckLength*100)
+		return deckLength*100
 
 	def getPyrPoints(self):
 		pyramidLength = len(self.game.pyramid)
@@ -44,8 +42,8 @@ class score(object):
 		sortsOn = self.game.sortsOn
 		sortsOnMultiply = 2
 		if(sortsOn):
-			return int((origPyrLength - pyramidLength)*1000)*sortsOnMultiply
-		return int((origPyrLength - pyramidLength)*1000)
+			return (origPyrLength - pyramidLength)*1000*sortsOnMultiply
+		return (origPyrLength - pyramidLength)*1000
 
 	def getWinPoints(self):
 		sortsOnMultiply = 2
@@ -54,9 +52,9 @@ class score(object):
 		winPoints = 1000
 		if(win):
 			if(sortsOn):
-				return int(winPoints*sortsOnMultiply)
+				return winPoints*sortsOnMultiply
 			else:
-				return int(winPoints)
+				return winPoints
 		else:
 			return 0
 	
@@ -65,20 +63,21 @@ class score(object):
 			return count
 		return self.getOrigPyramidLength(height-1, count+height)
 
-	def add(self, score):
+	def addScore(self, score):
 		scores = open('allScores.txt', 'a')
 		scores.write(score)	
 		scores.close()
 
+	def addName(self, name):
+		scores = open('allScores.txt', 'a')
+		scores.write(name)	
+		scores.close()
+
 	def getAllScores(self):
 		temp = open('allScores.txt', 'r+')
-		str = temp.read()
-		temp.close()
-		
-		listOfScores = str.splitlines()
 		scores = []
-		for i in range(0, len(listOfScores)):
-			scores.append(int(listOfScores[i]))
+		scores = [line.split() for line in temp]
+		temp.close()
 		return scores
 		
 	def getHighScores(self):
@@ -88,11 +87,11 @@ class score(object):
 			length = len(scores)
 		else:
 			length = 5
-		top = 0
+		#sortedScores = sorted(scores, key=lambda score:score[1], reverse=True)
+		sortedScores = sorted(scores, reverse=True)
+		
 		for i in range(0,length):
-			top = max(scores)
-			highScores.append(top)
-			scores.remove(top)
+			highScores.append(sortedScores[i])
 		return highScores
 
 	def getHelp(self):
@@ -104,7 +103,7 @@ class score(object):
 	def getHighScoreString(self):
 		list = self.getHighScores()
 		for i in range(0, len(list)):
-			list[i] = (str(i+1) + '. ' + str(list[i]) + '\n')
+			list[i] = (str(i+1) + '. ' + str(list[i][1]) + ' ' + str(list[i][0]) + '\n')
 		tempString = ''
 		for i in range(0, len(list)):
 			tempString = tempString + list[i]

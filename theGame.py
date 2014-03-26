@@ -6,7 +6,7 @@ class theGame(object):
 		#Make full deck
 		deck = Deck.Deck()
 		deck.fullDeck()
-		deck.shuffle() 
+		#deck.shuffle() 
 
 		pyramidObject = Pyramid.Pyramid(deck, height)
 		self.pyramid = pyramidObject.getCards() 	#Pyramid cards in list
@@ -16,7 +16,7 @@ class theGame(object):
 		
 		self.height = height
 		self.start = time.clock()
-		self.time = 0
+		self.time = self.start
 		self.win = False
 		self.scoreThing = Scores.score(self)
 	
@@ -81,14 +81,18 @@ class theGame(object):
 	def gameWon(self):
 		if (len(self.pyramid) == 0):
 			self.win = True
-			score = self.scoreThing.getScore()
-			self.scoreThing.add(str(score) + '\n')
+			self.setTime()
 			return True
 		else:
 			return False
 
 	def getTime(self):
-		self.time = time.clock() - self.start
-		return self.time
+		return time.clock() - self.start
 		
-	
+	def setTime(self):
+		self.time = time.clock() - self.start
+		
+	def addScore(self):
+		score = self.scoreThing.getScore()
+		scoreStr = str(score) + '\t'
+		self.scoreThing.addScore(scoreStr)
