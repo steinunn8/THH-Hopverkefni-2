@@ -447,8 +447,8 @@ class PostHighScoreFrame(wx.Frame):
         self.bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.bottom_sizer.Add(self.score_panel,0, wx.EXPAND)
         self.Bind(wx.EVT_SIZE, self.OnSize)
-		#Score part:
-		self.text = wx.StaticText(self.score_panel, -1,'\n     You got ' + total + ' points \n     Your points divide like this:\n'+ divided, style=wx.ALIGN_LEFT)
+        #Score part:
+        self.text = wx.StaticText(self.score_panel, -1,'\n     You got ' + total + ' points \n     Your points divide like this:\n'+ divided, style=wx.ALIGN_LEFT)
         self.text.Wrap(1000)
         self.pandaGif()
         self.main_sizer.Add(self.gif_panel,0)
