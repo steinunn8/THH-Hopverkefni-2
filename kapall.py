@@ -396,6 +396,7 @@ class LevelFrame(wx.Frame):
             self.height = 7
             self.sortsOn = True
 
+#Frame for help text from menu
 class HelpFrame(wx.Frame):
     def __init__(self, parent, temp):
         wx.Frame.__init__(self, parent, -1, 'Help', size = (500, 700))
@@ -414,7 +415,8 @@ class HelpFrame(wx.Frame):
         
     def OnSize(self, event):
         self.Layout()
-        
+ 
+# Frame for showing High Score from menu        
 class HighScoreFrame(wx.Frame):
     def __init__(self, parent, temp):
         wx.Frame.__init__(self, parent, -1, 'High Score', size = (200, 200))
@@ -428,7 +430,7 @@ class HighScoreFrame(wx.Frame):
     def OnSize(self, event):
         self.Layout()
 
-
+#Frame for showing users score when he wins
 class PostHighScoreFrame(wx.Frame):
     def __init__(self, parent, total, divided):
         wx.Frame.__init__(self, parent, -1, 'Game over!', size = (500,530))

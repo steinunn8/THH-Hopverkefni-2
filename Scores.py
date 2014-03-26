@@ -17,8 +17,6 @@ class score(object):
 		deckPoints = self.getDeckPoints()
 		pyramidPoints = self.getPyrPoints()
 		winPoints = self.getWinPoints()
-		#print "Time" + timePoints
-		#print "" + deckPoints
 		return timePoints + deckPoints + pyramidPoints + winPoints
 				
 	def getCurrentPoints(self):
@@ -138,6 +136,7 @@ class score(object):
 	def getBonusTime(self):
 		return self.bonusTime
 
+	# Returns a string with info about how the points where divided
 	def getDivided(self):
 		time = self.getTimePoints()
 		deck = self.getDeckPoints()

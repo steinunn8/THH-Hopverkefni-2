@@ -6,7 +6,7 @@ class theGame(object):
 		#Make full deck
 		deck = Deck.Deck()
 		deck.fullDeck()
-		#deck.shuffle() Not done because of unittesting
+		deck.shuffle() 
 
 		pyramidObject = Pyramid.Pyramid(deck, height)
 		self.pyramid = pyramidObject.getCards() 	#Pyramid cards in list
@@ -16,9 +16,7 @@ class theGame(object):
 		
 		self.height = height
 		self.start = time.clock()
-		#Scores.startBonusTime()
 		self.time = 0
-		#self.score = 0
 		self.win = False
 		self.scoreThing = Scores.score(self)
 	
@@ -56,7 +54,7 @@ class theGame(object):
 			return True
 		return False
 
-	#Draw from pile and add to trash
+	#Draw from pile and add to trash.
 	def flip(self):
 		if(self.deck.isEmpty()):
 			print "You have lost!"
@@ -85,9 +83,6 @@ class theGame(object):
 			score = self.scoreThing.getScore()
 			self.scoreThing.add(str(score) + '\n')
 			self.win = True
-			print "You have won!"
-			print "You got: " + str(score) + " points!!"
-			print "You took " + str(self.getTime()) + "seconds"
 			return True
 		else:
 			return False
