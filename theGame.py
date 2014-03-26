@@ -80,9 +80,9 @@ class theGame(object):
 
 	def gameWon(self):
 		if (len(self.pyramid) == 0):
+			self.win = True
 			score = self.scoreThing.getScore()
 			self.scoreThing.add(str(score) + '\n')
-			self.win = True
 			return True
 		else:
 			return False
