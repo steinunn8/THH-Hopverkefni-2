@@ -267,12 +267,13 @@ class PygameDisplay(wx.Window):
          
 class Frame(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, -1, size = (900, 700))
+        wx.Frame.__init__(self, parent, -1, size = (900, 750))
         wx.Frame.CenterOnScreen(self)
         self.display = PygameDisplay(self, -1)
-       
+        
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
+        self.count = 1
 
         # menu bar
         menuBar = wx.MenuBar()
@@ -286,10 +287,22 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.getHighScores, m_show_highscore)
         m_help = menu.Append(wx.ID_HELP, "&Help", "Get help.")
         self.Bind(wx.EVT_MENU, self.getHelp, m_help)
+        """menu = wx.Menu() # Take this one ....
+        m_undo = menu.Append(wx.ID_OK, "&Undo", "Undo the thing you just did.")
+        self.Bind(wx.EVT_MENU, self.undo, m_undo)
+        menuBar.Append(menu, "&Undo") # and this one out if we want it under file"""
 
+        self.toolbar = self.CreateToolBar()
+        tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'))
+        tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'))
+        self.toolbar.EnableTool(wx.ID_REDO, False)
+        self.toolbar.Realize()
+
+        self.Bind(wx.EVT_MENU, self.onUndo, tundo)
+        self.Bind(wx.EVT_MENU, self.onRedo, tredo)
 
         self.SetMenuBar(menuBar)       
-        self.SetTitle("Pyramid: Second edition")
+        self.SetTitle("Pyramid")
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
        
@@ -324,6 +337,25 @@ class Frame(wx.Frame):
         temp = self.game.scoreThing.getHelp()
         self.help_frame = HelpFrame(parent = None, temp = temp)
         self.help_frame.Show()
+
+    def undo(self,event):
+        global game
+        #Nothing done yet
+        return True
+
+    def onUndo(self, e):
+        if self.count == 1:
+            self.toolbar.EnableTool(wx.ID_UNDO, False)
+            self.toolbar.EnableTool(wx.ID_REDO, True)
+            self.count = 0
+        #Add stuff here to to
+
+    def onRedo(self, e):
+        if self.count == 0:
+            self.toolbar.EnableTool(wx.ID_REDO, False)
+            self.toolbar.EnableTool(wx.ID_UNDO, True)
+            self.count = 1
+        #Add stuff here to do
     
 class LevelFrame(wx.Frame):
     def __init__(self, parent):
