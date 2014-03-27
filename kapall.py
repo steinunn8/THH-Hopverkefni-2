@@ -177,6 +177,7 @@ class PygameDisplay(wx.Window):
         # remove card from pyramid
         card.kill()
         self.game_won()
+        self.game.fromDeck = False
 
     def drawNewCard(self, event):        
         self.draw_card()
@@ -203,6 +204,7 @@ class PygameDisplay(wx.Window):
             self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
             self.pile_cards.add(self.compare_card)
             self.last_compare_card = self.compare_card
+            self.game.fromDeck = True
 
     def draw_points(self):
         #self.points = Scores.getCurrentPoints(self.game)
@@ -267,6 +269,7 @@ class PygameDisplay(wx.Window):
          
 class Frame(wx.Frame):
     def __init__(self, parent):
+        global game
         wx.Frame.__init__(self, parent, -1, size = (900, 750))
         wx.Frame.CenterOnScreen(self)
         self.display = PygameDisplay(self, -1)
@@ -274,6 +277,7 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
         self.count = 1
+        self.game = game
 
         # menu bar
         menuBar = wx.MenuBar()
@@ -289,7 +293,7 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.getHelp, m_help)
         """menu = wx.Menu() # Take this one ....
         m_undo = menu.Append(wx.ID_OK, "&Undo", "Undo the thing you just did.")
-        self.Bind(wx.EVT_MENU, self.undo, m_undo)
+        self.Bind(wx.EVT_MENU, self.onUndo, m_undo)
         menuBar.Append(menu, "&Undo") # and this one out if we want it under file"""
 
         self.toolbar = self.CreateToolBar()
@@ -325,33 +329,28 @@ class Frame(wx.Frame):
         app.level_frame.Show()
 
     def getHighScores(self, event):
-        global game
-        self.game = game
+        #global game
+        #self.game = game
         temp = self.game.scoreThing.getHighScoreString()
         self.high_score_frame = HighScoreFrame(parent = None, temp = temp)
         self.high_score_frame.Show()
 
     def getHelp(self, event):
-        global game
-        self.game = game
+        #global game
+        #self.game = game
         temp = self.game.scoreThing.getHelp()
         self.help_frame = HelpFrame(parent = None, temp = temp)
         self.help_frame.Show()
 
-    def undo(self,event):
-        global game
-        #Nothing done yet
-        return True
-
-    def onUndo(self, e):
-        if self.count == 1:
+    def onUndo(self, event):
+        if self.count == 1 and self.game.fromDeck == True:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
             self.toolbar.EnableTool(wx.ID_REDO, True)
             self.count = 0
         #Add stuff here to to
 
-    def onRedo(self, e):
-        if self.count == 0:
+    def onRedo(self, event):
+        if self.count == 0 and self.game.fromDeck == True:
             self.toolbar.EnableTool(wx.ID_REDO, False)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
             self.count = 1

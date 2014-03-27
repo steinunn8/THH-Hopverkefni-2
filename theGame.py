@@ -19,6 +19,7 @@ class theGame(object):
 		self.time = self.start
 		self.win = False
 		self.scoreThing = Scores.score(self)
+		self.fromDeck = False
 	
 	#If color of the x card is not the same as color of first card in trash we return true
 	def checkColor(self, x): #x is a card
