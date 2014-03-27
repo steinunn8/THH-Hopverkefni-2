@@ -438,7 +438,7 @@ class HighScoreFrame(wx.Frame):
 #Frame for showing users score when he wins
 class PostHighScoreFrame(wx.Frame):
     def __init__(self, parent, total, divided):
-        wx.Frame.__init__(self, parent, -1, 'Game over!', size = (500,530))
+        wx.Frame.__init__(self, parent, -1, 'Game over!', size = (500,700))
         wx.Frame.CenterOnScreen(self)
         self.SetBackgroundColour('#FFFFFF')
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -455,18 +455,16 @@ class PostHighScoreFrame(wx.Frame):
         self.main_sizer.Add(self.gif_panel,0)
         self.main_sizer.Add(self.bottom_sizer,0)
 		
-        #---
-        global game
-        self.game = game
-        self.name_panel = wx.Panel(self, -1, size = (500,530))
-        box = wx.TextEntryDialog(self.name_panel, "What is your name", "Name for score", "Anonymous")
-        if box.ShowModal()==wx.ID_OK:
-            name=box.GetValue()
-        self.main_sizer.Add(self.name_panel,0)
-        nameStr = name + '\n'
-        self.game.addScore()
-        self.game.scoreThing.addName(nameStr)
-        #---
+        #---Johanna start---
+        self.name_panel = wx.Panel(self, -1, size = (500,700))
+        self.name = ""
+        self.lblname = wx.StaticText(self.name_panel, label="Enter name:", pos = (60, 552))
+        self.lblscore = wx.StaticText(self.name_panel, label="Score:", pos = (60, 575))
+        self.theScore = wx.StaticText(self.name_panel, label=str(total), pos = (130, 575))
+        self.editname = wx.TextCtrl(self.name_panel, size=(140, -1), pos = (130,550))
+        self.button = wx.Button(self.name_panel, label="Save score", pos = (280,549))
+        self.button.Bind(wx.EVT_BUTTON, self.OnButton)
+        #---Johanna end-----
 		
         self.main_sizer.Fit(self)
     
@@ -481,6 +479,16 @@ class PostHighScoreFrame(wx.Frame):
         self.gif.GetPlayer().UseBackgroundColour(True)
         # continuously loop through the frames of the gif file (default)
         self.gif.Play()
+
+    #---Johanna again--------
+    def OnButton(self, e):
+        self.name = self.editname.GetValue()
+        global game
+        self.game = game
+        nameStr = self.name + '\n'
+        self.game.addScore()
+        self.game.scoreThing.addName(nameStr)
+        self.button.Disable()
 
 class App(wx.App):
     def OnInit(self):
