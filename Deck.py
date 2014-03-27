@@ -30,6 +30,9 @@ class Deck:
 					self.deck.append(card)
 			x = 0
 			y += 123
+		wild_img = pygame.image.load('wild.png')
+		wild = Card("Wild", 100, False, wild_img)
+		self.deck.append(wild)
 
 	def shuffle(self):
 		random.shuffle(self.deck)

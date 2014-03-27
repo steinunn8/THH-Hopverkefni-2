@@ -29,7 +29,9 @@ class theGame(object):
 	
 	def isLegal(self, x): #x is a card
 		y = self.trash.show()
-		if(self.sortsOn):	
+		if(x.rank == 100 or y.rank == 100):
+			return True
+		elif(self.sortsOn):	
 			if(x.isAvailable() and self.checkColor(x)): #If card has no children and the colors are different
 				if(abs(x.rank - y.rank) == 1):
 					return True
