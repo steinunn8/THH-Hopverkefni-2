@@ -20,6 +20,7 @@ class theGame(object):
 		self.win = False
 		self.scoreThing = Scores.score(self)
 	
+	#If color of the x card is not the same as color of first card in trash we return true
 	def checkColor(self, x): #x is a card
 		y = self.trash.show()
 		if((x.red and y.red) or (not x.red and not y.red)): #if both red or both black
@@ -27,7 +28,10 @@ class theGame(object):
 		else:
 			return True
 	
+	#Compares card x to the first card in trash.
 	def isLegal(self, x): #x is a card
+		if(self.trash.isEmpty()):
+			return False
 		y = self.trash.show()
 		if(x.rank == 100 or y.rank == 100):
 			return True
@@ -46,12 +50,13 @@ class theGame(object):
 					return True
 			return False
 
+	#We remove card from pyramid if it meets conditions
 	def pick(self, x): #x is a card
 		y = self.trash.show()
 		if(self.isLegal(x)):
-			x.delete()
 			self.trash.addFirst(x) 		#add card to trash if legal
-			self.pyramid.remove(x)		#remove card from pyramid list
+			self.pyramid.remove(x)      #remove card from pyramid list
+			x.delete()				
 			self.gameWon()				#check if game is over
 			return True
 		return False
@@ -59,9 +64,8 @@ class theGame(object):
 	#Draw from pile and add to trash.
 	def flip(self):
 		if(self.deck.isEmpty()):
-			print "You have lost!"
 			joker_img = pygame.image.load('joker.png')
-			return Deck.Card("Joker", 100, True, joker_img)
+			return Deck.Card("Joker", 100, True, joker_img)	
 		card = self.deck.draw()
 		self.trash.addFirst(card)
 		return card
@@ -79,6 +83,9 @@ class theGame(object):
 		print 'Pyramid: '
 		for i in range(0, len(self.pyramid)):
 			print self.pyramid[i],
+
+	def showLastTrash(self):
+		return self.trash.show()
 
 	def gameWon(self):
 		if (len(self.pyramid) == 0):

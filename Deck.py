@@ -1,7 +1,5 @@
-#Hopverkefni 2
 import random, sys, pygame
 
-#thorhildur prof fyrir netbeans pull
 class Deck:
 	def __init__(self):
 		self.deck = []
@@ -30,6 +28,7 @@ class Deck:
 					self.deck.append(card)
 			x = 0
 			y += 123
+		#Add a wild card
 		wild_img = pygame.image.load('wild.png')
 		wild = Card("Wild", 100, False, wild_img)
 		self.deck.append(wild)
@@ -51,18 +50,23 @@ class Deck:
 		else:
 			return
 
+	#Adds card to front of deck (positon 0)
 	def addFirst(self,card):
 		self.deck.insert(0,card)
 
+	#Adds card to last seat of deck
 	def addLast(self,card):
 		self.deck.append(card)
 
+	#Makes deck empty
 	def emptyDeck(self):
 		self.deck = []
 
+	#Checks if deck is empty
 	def isEmpty(self):
 		return self.deck == []
 	
+	#Print out the deck, for testing
 	def showAll(self):
 		for i in range(0, len(self.deck)):
 			print self.deck[i],
@@ -80,7 +84,7 @@ class Card(object):
 		self.right = None
 		self.rightParent = None
 		self.leftParent = None
-		#center of card
+		#center of card, default position
 		self.x = 450
 		self.y = 570
 		self.image = image
@@ -134,7 +138,6 @@ class Card(object):
 			return True
 		else:
 			return False
-		
 		
 	#Shows the card (for example temp.show() shows what card temp is)
 	def show(self):
