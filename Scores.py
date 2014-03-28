@@ -76,7 +76,11 @@ class score(object):
 	def getAllScores(self):
 		temp = open('allScores.txt', 'r+')
 		scores = []
-		scores = [line.split() for line in temp]
+		string = temp.read()
+		lines = string.split('\n')
+		scores = []
+		for i in range(0,len(lines)-1):
+			scores.append(lines[i].split('\t'))
 		temp.close()
 		return scores
 		
@@ -87,8 +91,8 @@ class score(object):
 			length = len(scores)
 		else:
 			length = 5
-		#sortedScores = sorted(scores, key=lambda score:score[1], reverse=True)
-		sortedScores = sorted(scores, reverse=True)
+		sortedScores = sorted(scores, key=lambda score:score[1], reverse=True)
+		#sortedScores = sorted(scores, reverse=True)
 		
 		for i in range(0,length):
 			highScores.append(sortedScores[i])
@@ -103,7 +107,7 @@ class score(object):
 	def getHighScoreString(self):
 		list = self.getHighScores()
 		for i in range(0, len(list)):
-			list[i] = (str(i+1) + '. ' + str(list[i][1]) + ' ' + str(list[i][0]) + '\n')
+			list[i] = (str(i+1) + '. ' + str(list[i][0]) + ' ' + str(list[i][1]) + '\n')
 		tempString = ''
 		for i in range(0, len(list)):
 			tempString = tempString + list[i]

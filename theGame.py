@@ -102,7 +102,7 @@ class theGame(object):
 	def setTime(self):
 		self.time = time.clock() - self.start
 		
-	def addScore(self):
-		score = self.scoreThing.getScore()
-		scoreStr = str(score) + '\t'
-		self.scoreThing.addScore(scoreStr)
+	#def addScore(self):
+	#	score = self.scoreThing.getScore()
+	#	scoreStr = str(score) + '\n'
+	#	self.scoreThing.addScore(scoreStr)

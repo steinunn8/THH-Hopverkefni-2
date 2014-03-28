@@ -469,6 +469,7 @@ class HighScoreFrame(wx.Frame):
 #Frame for showing users score when he wins
 class PostHighScoreFrame(wx.Frame):
     def __init__(self, parent, total, divided):
+        self.total = total
         wx.Frame.__init__(self, parent, -1, 'Game over!', size = (500,700))
         wx.Frame.CenterOnScreen(self)
         self.SetBackgroundColour('#FFFFFF')
@@ -516,9 +517,10 @@ class PostHighScoreFrame(wx.Frame):
         self.name = self.editname.GetValue()
         global game
         self.game = game
-        nameStr = self.name + '\n'
-        self.game.addScore()
+        nameStr = self.name + '\t'
+        scoreStr = str(self.total) + '\n'
         self.game.scoreThing.addName(nameStr)
+        self.game.scoreThing.addScore(scoreStr)
         self.button.Disable()
 
 class App(wx.App):
@@ -533,12 +535,12 @@ class App(wx.App):
         self.level_frame.Show()
 
         #test for win window
-        """game = theGame.theGame(4, False)
+        game = theGame.theGame(4, False)
         score = Scores.score(game)
         total = str(score.getScore())
         divided = score.getDivided()
         self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided)
-        self.post_score_frame.Show()"""
+        self.post_score_frame.Show()
 
         return True
 
