@@ -81,6 +81,8 @@ class score(object):
 		scores = []
 		for i in range(0,len(lines)-1):
 			scores.append(lines[i].split('\t'))
+		for i in range(0,len(scores)):
+			scores[i][1] = int(scores[i][1])
 		temp.close()
 		return scores
 		
