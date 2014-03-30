@@ -70,6 +70,9 @@ class PygameDisplay(wx.Window):
         self.mouse_down = False
         self.card_moving = False
         self.white = (255, 255, 255)
+
+        self.background = pygame.image.load("backgrounds/beach.jpeg")
+        self.background_rect = self.background.get_rect()
         
         # groups for sprites
         self.pyramid_cards = pygame.sprite.OrderedUpdates()
@@ -116,8 +119,8 @@ class PygameDisplay(wx.Window):
             self.screen = pygame.Surface(self.size, 0, 32)
             self.size_dirty = False 
 
-        # set background white
-        self.screen.fill(self.white)
+        # draw background
+        self.screen.blit(self.background, self.background_rect)
 
         # draw the cards
         # we draw them in seperate groups to make sure that pyramid cards have a higher z-level
@@ -295,7 +298,23 @@ class Frame(wx.Frame):
         m_undo = menu.Append(wx.ID_OK, "&Undo", "Undo the thing you just did.")
         self.Bind(wx.EVT_MENU, self.onUndo, m_undo)
         menuBar.Append(menu, "&Undo") # and this one out if we want it under file"""
-
+        # change looks
+        looks = wx.Menu()
+        menuBar.Append(looks, "&Looks")
+        # change background
+        backgrounds = wx.Menu()
+        background1 = backgrounds.Append(wx.NewId(), "Beach")
+        self.Bind(wx.EVT_MENU, self.choose_background1, background1)
+        background2 = backgrounds.Append(wx.NewId(), "Forest")
+        self.Bind(wx.EVT_MENU, self.choose_background2, background2)
+        background3 = backgrounds.Append(wx.NewId(), "Underwater")
+        self.Bind(wx.EVT_MENU, self.choose_background3, background3)
+        background4 = backgrounds.Append(wx.NewId(), "Football")
+        self.Bind(wx.EVT_MENU, self.choose_background4, background4)
+        background5 = backgrounds.Append(wx.NewId(), "Panda")
+        self.Bind(wx.EVT_MENU, self.choose_background5, background5)
+        looks.AppendMenu(wx.NewId(), "Choose background", backgrounds)
+        
         self.toolbar = self.CreateToolBar()
         tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'))
         tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'))
@@ -355,6 +374,26 @@ class Frame(wx.Frame):
             self.toolbar.EnableTool(wx.ID_UNDO, True)
             self.count = 1
         #Add stuff here to do
+
+    def choose_background1(self, event):
+        self.display.background = pygame.image.load("backgrounds/beach.jpeg")
+        self.display.background_rect = self.display.background.get_rect()
+
+    def choose_background2(self, event):
+        self.display.background = pygame.image.load("backgrounds/forest.jpg")
+        self.display.background_rect = self.display.background.get_rect()
+
+    def choose_background3(self, event):
+        self.display.background = pygame.image.load("backgrounds/underwater.jpg")
+        self.display.background_rect = self.display.background.get_rect()
+
+    def choose_background4(self, event):
+        self.display.background = pygame.image.load("backgrounds/football.jpg")
+        self.display.background_rect = self.display.background.get_rect()
+
+    def choose_background5(self, event):
+        self.display.background = pygame.image.load("backgrounds/panda.png")
+        self.display.background_rect = self.display.background.get_rect()
     
 class LevelFrame(wx.Frame):
     def __init__(self, parent):
