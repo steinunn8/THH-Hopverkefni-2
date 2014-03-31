@@ -109,7 +109,4 @@ class theGame(object):
 	#puts x back into Deck
 	def undoDraw(self, x):
 		self.deck.addFirst(x)
-
-	#puts x back into trash pile
-	def redoDraw(self, x):
-		self.trash.addFirst(x)
+		self.trash.draw()

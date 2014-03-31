@@ -202,7 +202,6 @@ class PygameDisplay(wx.Window):
             self.draw_button.SetBitmapLabel(self.deck_image)
 
             # display last card in pile
-            # Needs fixing here
             new_card = self.game.flip()
             self.compare_card = self.last_compare_card;
             self.pile_cards.add(self.compare_card)
@@ -283,6 +282,7 @@ class PygameDisplay(wx.Window):
         self.compare_card.kill()
         self.compare_card = SpriteCard([self.undo_compare_card.real_card.x, self.undo_compare_card.real_card.y], self.undo_compare_card.real_card)
         self.pile_cards.add(self.compare_card)
+        print "undo: ", self.compare_card.real_card
 
     def redo_draw(self):
         self.draw_card()
