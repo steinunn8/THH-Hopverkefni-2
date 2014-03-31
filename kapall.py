@@ -180,7 +180,7 @@ class PygameDisplay(wx.Window):
         # remove card from pyramid
         card.kill()
         self.game_won()
-        app.frame.onUndoDone()
+        self.game.fromDeck = False
 
     def drawNewCard(self, event):        
         self.draw_card()
@@ -207,7 +207,7 @@ class PygameDisplay(wx.Window):
             self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
             self.pile_cards.add(self.compare_card)
             self.last_compare_card = self.compare_card
-            app.frame.onUndoDone()
+            self.game.fromDeck = True
 
     def draw_points(self):
         #self.points = Scores.getCurrentPoints(self.game)
@@ -267,7 +267,7 @@ class PygameDisplay(wx.Window):
         if len(self.pyramid_cards.sprites()) == 0:
             total = str(self.game.scoreThing.getScore())
             divided = self.game.scoreThing.getDivided()
-            self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided)
+            self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = True)
             self.post_score_frame.Show()  
          
 class Frame(wx.Frame):
@@ -279,21 +279,29 @@ class Frame(wx.Frame):
         
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
-        self.undoClicked = True
+        self.count = 1
         self.game = game
 
         # menu bar
         menuBar = wx.MenuBar()
         menu = wx.Menu()
+        #EXIT
         m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
         self.Bind(wx.EVT_MENU, self.Kill, m_exit)
         menuBar.Append(menu, "&File")
+        # NEW GAME
         m_new_game = menu.Append(wx.ID_ABOUT, "&New Game", "Start a new game.")
         self.Bind(wx.EVT_MENU, self.OnNewGame, m_new_game)
+        # HIGH SCORE
         m_show_highscore = menu.Append(wx.ID_PREVIEW, "&High Score", "See top 5 scores.")
         self.Bind(wx.EVT_MENU, self.getHighScores, m_show_highscore)
+        # HELP
         m_help = menu.Append(wx.ID_HELP, "&Help", "Get help.")
         self.Bind(wx.EVT_MENU, self.getHelp, m_help)
+        # GIVE UP
+        m_give_up = menu.Append(wx.ID_PREVIEW, "&Give Up", "Give up and save score")
+        self.Bind(wx.EVT_MENU, self.onGiveUp, m_give_up)
+
         """menu = wx.Menu() # Take this one ....
         m_undo = menu.Append(wx.ID_OK, "&Undo", "Undo the thing you just did.")
         self.Bind(wx.EVT_MENU, self.onUndo, m_undo)
@@ -361,33 +369,25 @@ class Frame(wx.Frame):
         self.help_frame = HelpFrame(parent = None, temp = temp)
         self.help_frame.Show()
 
-    def onUndo(self, event):
-        self.onUndoClicked()
+    def onGiveUp(self, event):
+        score = Scores.score(game)
+        total = str(score.getScore())
+        divided = score.getDivided()
+        self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = False)
+        self.post_score_frame.Show()
 
-    def onUndoClicked(self):
-        card = self.display.game.trash.show()
-        if card.fromDeck == True:
+    def onUndo(self, event):
+        if self.count == 1 and self.game.fromDeck == True:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
             self.toolbar.EnableTool(wx.ID_REDO, True)
-            self.undoClicked = True
-        else:
-            self.toolbar.EnableTool(wx.ID_UNDO, False)
-
-    def onUndoDone(self):
-        card = self.display.game.trash.show()
-        print card.fromDeck
-        if card.fromDeck == True:
-            self.toolbar.EnableTool(wx.ID_UNDO, True)
-            self.toolbar.EnableTool(wx.ID_REDO, False)
-        else:
-            self.toolbar.EnableTool(wx.ID_UNDO, False)
+            self.count = 0
         #Add stuff here to to
 
     def onRedo(self, event):
-        if self.undoClicked:
+        if self.count == 0 and self.game.fromDeck == True:
             self.toolbar.EnableTool(wx.ID_REDO, False)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
-            self.undoClicked = False
+            self.count = 1
         #Add stuff here to do
 
     def choose_background1(self, event):
@@ -522,20 +522,24 @@ class HighScoreFrame(wx.Frame):
 
 #Frame for showing users score when he wins
 class PostHighScoreFrame(wx.Frame):
-    def __init__(self, parent, total, divided):
+    def __init__(self, parent, total, divided, won = True):
         self.total = total
+        self.won = won
         wx.Frame.__init__(self, parent, -1, 'Game over!', size = (500,700))
         wx.Frame.CenterOnScreen(self)
         self.SetBackgroundColour('#FFFFFF')
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         self.score_panel = wx.Panel(self, -1, size = (500,200))
+        self.score_panel.SetBackgroundColour("indigo")
         self.gif_panel = wx.Panel(self, -1, size = (500,530))
+        self.gif_panel.SetBackgroundColour("indigo")
  
         self.bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.bottom_sizer.Add(self.score_panel,0, wx.EXPAND)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         #Score part:
-        self.text = wx.StaticText(self.score_panel, -1,'\n     You got ' + total + ' points \n     Your points divide like this:\n'+ divided, style=wx.ALIGN_LEFT)
+        score_text = '\n     You got ' + total + ' points \n     Your points divide like this:\n'+ divided
+        self.text = wx.StaticText(self.score_panel, -1, score_text, style=wx.ALIGN_LEFT)
         self.text.Wrap(1000)
         self.pandaGif()
         self.main_sizer.Add(self.gif_panel,0)
@@ -559,8 +563,11 @@ class PostHighScoreFrame(wx.Frame):
 
     def pandaGif(self):
         # Gif part
-        gif_file = "panda.gif"
-        self.gif = wx.animate.GIFAnimationCtrl(self.gif_panel, -1, gif_file, pos=(0, 200))
+        if (self.won):
+            gif_file = "panda.gif"
+        else:
+            gif_file = "pandagiveup.gif"
+        self.gif = wx.animate.GIFAnimationCtrl(self.gif_panel, -1, gif_file, pos= (0,200))
         # clears the background
         self.gif.GetPlayer().UseBackgroundColour(True)
         # continuously loop through the frames of the gif file (default)
@@ -588,14 +595,16 @@ class App(wx.App):
         self.level_frame = LevelFrame(parent = None)
         self.level_frame.Show()
 
+        
         #test for win window
-        """game = theGame.theGame(4, False)
+        """
+        game = theGame.theGame(4, False)
         score = Scores.score(game)
         total = str(score.getScore())
         divided = score.getDivided()
-        self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided)
-        self.post_score_frame.Show()"""
-
+        self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = False)
+        self.post_score_frame.Show()
+        """
         return True
 
     
