@@ -202,6 +202,7 @@ class PygameDisplay(wx.Window):
             self.pile_cards.add(self.compare_card)
         else:
             # get new card from deck
+            self.undo_compare_card = self.compare_card
             new_card = self.game.flip()
             new_card.up = True
             self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
@@ -269,6 +270,16 @@ class PygameDisplay(wx.Window):
             divided = self.game.scoreThing.getDivided()
             self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = True)
             self.post_score_frame.Show()  
+	
+    def undo_draw(self):
+        self.game.undoDraw(self.compare_card.real_card)   # put card back in pile
+        self.future_card = self.compare_card    # save card for redo option
+        self.compare_card.kill()
+        self.compare_card = SpriteCard([self.undo_compare_card.real_card.x, self.undo_compare_card.real_card.y], self.undo_compare_card.real_card)
+        self.pile_cards.add(self.compare_card)
+
+    def redo_draw(self):
+        self.draw_card()
          
 class Frame(wx.Frame):
     def __init__(self, parent):
@@ -385,6 +396,7 @@ class Frame(wx.Frame):
             self.toolbar.EnableTool(wx.ID_UNDO, False)
             self.toolbar.EnableTool(wx.ID_REDO, True)
             self.undoClicked = True
+            self.display.undo_draw()
         else:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
 
@@ -402,6 +414,7 @@ class Frame(wx.Frame):
             self.toolbar.EnableTool(wx.ID_REDO, False)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
             self.undoClicked = False
+            self.display.redo_draw()
         #Add stuff here to do
 
     def choose_background1(self, event):
