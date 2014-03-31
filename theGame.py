@@ -109,6 +109,9 @@ class theGame(object):
 	def undoDraw(self, x):
 		self.deck.addFirst(x)
 
+	def redoDraw(self, x):
+		self.trash.addFirst(x)
+
 	#def addScore(self):
 	#	score = self.scoreThing.getScore()
 	#	scoreStr = str(score) + '\n'
