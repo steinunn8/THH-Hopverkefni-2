@@ -18,7 +18,7 @@ class theGame(object):
 		self.start = time.clock()
 		self.time = self.start
 		self.win = False
-		self.scoreThing = Scores.score(self)
+		self.scoreThing = Scores.Score(self)
 		self.fromDeck = False
 	
 	#If color of the x card is not the same as color of first card in trash we return true

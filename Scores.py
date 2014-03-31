@@ -1,6 +1,6 @@
 import time, threading
 
-class score(object):
+class Score(object):
 	def __init__(self, aGame):
 		self.game = aGame
 		self.bonusTime = ''
