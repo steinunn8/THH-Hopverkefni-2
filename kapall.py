@@ -61,7 +61,13 @@ class PygameDisplay(wx.Window):
 
         # game stuff     
         pygame.init()
-        self.screen = pygame.Surface(self.size, 0, 32)      
+        self.screen = pygame.Surface(self.size, 0, 32)
+
+        # draw draw button
+        self.deck_image_file = "card_back.jpg"
+        self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.draw_button = wx.BitmapButton(self, id=-1, bitmap=self.deck_image,
+            pos=(700, 510), size = (self.deck_image.GetWidth()+5, self.deck_image.GetHeight()+5))
         
     def start_game(self, game):
         self.game = game
@@ -88,10 +94,9 @@ class PygameDisplay(wx.Window):
          # deck to draw new card
         self.deck_image_file = "card_back.jpg"
         self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-        self.draw_button = wx.BitmapButton(self, id=-1, bitmap=self.deck_image,
-            pos=(700, 510), size = (self.deck_image.GetWidth()+5, self.deck_image.GetHeight()+5))
+        self.draw_button.SetBitmapLabel(self.deck_image)
         self.Bind(wx.EVT_BUTTON, self.drawNewCard, self.draw_button)
-        
+
         # make sprite for the top card in trash pile
         self.fake_card = self.game.pyramid[0]
         self.compare_card = SpriteCard([250, 300], self.fake_card)
@@ -177,6 +182,7 @@ class PygameDisplay(wx.Window):
         self.compare_card.kill()
         self.compare_card = SpriteCard([self.last_compare_card.real_card.x, self.last_compare_card.real_card.y], card.real_card)
         self.pile_cards.add(self.compare_card)
+        self.last_compare_card = self.compare_card
         # remove card from pyramid
         card.kill()
         self.game_won()
