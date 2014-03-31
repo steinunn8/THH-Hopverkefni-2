@@ -90,7 +90,7 @@ class PygameDisplay(wx.Window):
         self.mouse_down = False
         self.white = (255, 255, 255)
 
-        self.background = pygame.image.load("backgrounds/beach.jpeg")
+        self.background = pygame.image.load("backgrounds/panda.png")
         self.background_rect = self.background.get_rect()
         
         # groups for sprites
@@ -354,15 +354,15 @@ class Frame(wx.Frame):
         menuBar.Append(looks, "&Looks")
         # change background
         backgrounds = wx.Menu()
-        background1 = backgrounds.Append(wx.NewId(), "Beach")
+        background1 = backgrounds.Append(wx.NewId(), "Panda")
         self.Bind(wx.EVT_MENU, self.choose_background1, background1)
-        background2 = backgrounds.Append(wx.NewId(), "Forest")
+        background2 = backgrounds.Append(wx.NewId(), "Dog")
         self.Bind(wx.EVT_MENU, self.choose_background2, background2)
-        background3 = backgrounds.Append(wx.NewId(), "Underwater")
+        background3 = backgrounds.Append(wx.NewId(), "Pyramids")
         self.Bind(wx.EVT_MENU, self.choose_background3, background3)
-        background4 = backgrounds.Append(wx.NewId(), "Football")
+        background4 = backgrounds.Append(wx.NewId(), "Bender")
         self.Bind(wx.EVT_MENU, self.choose_background4, background4)
-        background5 = backgrounds.Append(wx.NewId(), "Panda")
+        background5 = backgrounds.Append(wx.NewId(), "Unicorn")
         self.Bind(wx.EVT_MENU, self.choose_background5, background5)
         looks.AppendMenu(wx.NewId(), "Choose background", backgrounds)
         
@@ -463,23 +463,23 @@ class Frame(wx.Frame):
         #Add stuff here to do
 
     def choose_background1(self, event):
-        self.display.background = pygame.image.load("backgrounds/beach.jpeg")
+        self.display.background = pygame.image.load("backgrounds/panda.png")
         self.display.background_rect = self.display.background.get_rect()
 
     def choose_background2(self, event):
-        self.display.background = pygame.image.load("backgrounds/forest.jpg")
+        self.display.background = pygame.image.load("backgrounds/dog.jpg")
         self.display.background_rect = self.display.background.get_rect()
 
     def choose_background3(self, event):
-        self.display.background = pygame.image.load("backgrounds/underwater.jpg")
+        self.display.background = pygame.image.load("backgrounds/pyramids.jpg")
         self.display.background_rect = self.display.background.get_rect()
 
     def choose_background4(self, event):
-        self.display.background = pygame.image.load("backgrounds/football.jpg")
+        self.display.background = pygame.image.load("backgrounds/bender.jpg")
         self.display.background_rect = self.display.background.get_rect()
 
     def choose_background5(self, event):
-        self.display.background = pygame.image.load("backgrounds/panda.png")
+        self.display.background = pygame.image.load("backgrounds/unicorn.png")
         self.display.background_rect = self.display.background.get_rect()
         
     def choose_cardImage1(self, event):
