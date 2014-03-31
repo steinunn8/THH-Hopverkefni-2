@@ -2,12 +2,12 @@ import Deck, Pyramid, time, Scores
 import pygame
 
 class theGame(object):
-	def __init__(self, height, sortsOn = False):
+	def __init__(self, height, sortsOn = False, shuffle = True):
 		#Make full deck
 		deck = Deck.Deck()
 		deck.fullDeck()
-		#deck.shuffle() 
-
+		if shuffle:
+			deck.shuffle() 
 		pyramidObject = Pyramid.Pyramid(deck, height)
 		self.pyramid = pyramidObject.getCards() 	#Pyramid cards in list
 		self.deck = pyramidObject.getDeck()			#Rest of cards
