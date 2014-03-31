@@ -180,7 +180,7 @@ class PygameDisplay(wx.Window):
         # remove card from pyramid
         card.kill()
         self.game_won()
-        self.game.fromDeck = False
+        app.frame.onUndoDone()
 
     def drawNewCard(self, event):        
         self.draw_card()
@@ -279,7 +279,7 @@ class Frame(wx.Frame):
         
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
-        self.count = 1
+        self.undoClicked = True
         self.game = game
 
         # menu bar
@@ -377,17 +377,31 @@ class Frame(wx.Frame):
         self.post_score_frame.Show()
 
     def onUndo(self, event):
-        if self.count == 1 and self.game.fromDeck == True:
+        self.onUndoClicked()
+
+    def onUndoClicked(self):
+        card = self.display.game.trash.show()
+        if card.fromDeck == True:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
             self.toolbar.EnableTool(wx.ID_REDO, True)
-            self.count = 0
+            self.undoClicked = True
+        else:
+            self.toolbar.EnableTool(wx.ID_UNDO, False)
+
+    def onUndoDone(self):
+        card = self.display.game.trash.show()
+        if card.fromDeck == True:
+            self.toolbar.EnableTool(wx.ID_UNDO, True)
+            self.toolbar.EnableTool(wx.ID_REDO, False)
+        else:
+            self.toolbar.EnableTool(wx.ID_UNDO, False)
         #Add stuff here to to
 
     def onRedo(self, event):
-        if self.count == 0 and self.game.fromDeck == True:
+        if self.undoClicked:
             self.toolbar.EnableTool(wx.ID_REDO, False)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
-            self.count = 1
+            self.undoClicked = False
         #Add stuff here to do
 
     def choose_background1(self, event):
