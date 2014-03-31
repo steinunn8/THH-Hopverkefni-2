@@ -103,7 +103,10 @@ class theGame(object):
 		
 	def setTime(self):
 		self.time = time.clock() - self.start
-		
+
+	def undoDraw(self, x):
+		self.deck.addFirst(x)
+
 	#def addScore(self):
 	#	score = self.scoreThing.getScore()
 	#	scoreStr = str(score) + '\n'
