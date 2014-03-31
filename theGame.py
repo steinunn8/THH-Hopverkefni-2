@@ -89,9 +89,7 @@ class theGame(object):
 		for i in range(0, len(self.pyramid)):
 			print self.pyramid[i],
 
-	def showLastTrash(self):
-		return self.trash.show()
-
+	#gives self.win and self.time the correct value and return True if you have won the game, else it returns False
 	def gameWon(self):
 		if (len(self.pyramid) == 0):
 			self.win = True
@@ -100,14 +98,18 @@ class theGame(object):
 		else:
 			return False
 
+	#returns the time that has elapsed at the moment
 	def getTime(self):
 		return time.clock() - self.start
-		
+	
+	#updates self.time the amount of time it took the play the game
 	def setTime(self):
 		self.time = time.clock() - self.start
 
+	#puts x back into Deck
 	def undoDraw(self, x):
 		self.deck.addFirst(x)
 
+	#puts x back into trash pile
 	def redoDraw(self, x):
 		self.trash.addFirst(x)
