@@ -180,7 +180,7 @@ class PygameDisplay(wx.Window):
         # remove card from pyramid
         card.kill()
         self.game_won()
-        self.game.fromDeck = False
+        app.frame.onUndoDone()
 
     def drawNewCard(self, event):        
         self.draw_card()
@@ -207,7 +207,7 @@ class PygameDisplay(wx.Window):
             self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
             self.pile_cards.add(self.compare_card)
             self.last_compare_card = self.compare_card
-            self.game.fromDeck = True
+            app.frame.onUndoDone()
 
     def draw_points(self):
         #self.points = Scores.getCurrentPoints(self.game)
@@ -279,7 +279,7 @@ class Frame(wx.Frame):
         
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
-        self.count = 1
+        self.undoClicked = True
         self.game = game
 
         # menu bar
@@ -362,17 +362,32 @@ class Frame(wx.Frame):
         self.help_frame.Show()
 
     def onUndo(self, event):
-        if self.count == 1 and self.game.fromDeck == True:
+        self.onUndoClicked()
+
+    def onUndoClicked(self):
+        card = self.display.game.trash.show()
+        if card.fromDeck == True:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
             self.toolbar.EnableTool(wx.ID_REDO, True)
-            self.count = 0
+            self.undoClicked = True
+        else:
+            self.toolbar.EnableTool(wx.ID_UNDO, False)
+
+    def onUndoDone(self):
+        card = self.display.game.trash.show()
+        print card.fromDeck
+        if card.fromDeck == True:
+            self.toolbar.EnableTool(wx.ID_UNDO, True)
+            self.toolbar.EnableTool(wx.ID_REDO, False)
+        else:
+            self.toolbar.EnableTool(wx.ID_UNDO, False)
         #Add stuff here to to
 
     def onRedo(self, event):
-        if self.count == 0 and self.game.fromDeck == True:
+        if self.undoClicked:
             self.toolbar.EnableTool(wx.ID_REDO, False)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
-            self.count = 1
+            self.undoClicked = False
         #Add stuff here to do
 
     def choose_background1(self, event):
@@ -574,12 +589,12 @@ class App(wx.App):
         self.level_frame.Show()
 
         #test for win window
-        game = theGame.theGame(4, False)
+        """game = theGame.theGame(4, False)
         score = Scores.score(game)
         total = str(score.getScore())
         divided = score.getDivided()
         self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided)
-        self.post_score_frame.Show()
+        self.post_score_frame.Show()"""
 
         return True
 

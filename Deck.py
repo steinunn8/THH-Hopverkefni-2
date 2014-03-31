@@ -48,7 +48,7 @@ class Deck:
 		if(not self.isEmpty()):
 			return self.deck[key]
 		else:
-			return
+			return 
 
 	#Adds card to front of deck (positon 0)
 	def addFirst(self,card):
@@ -68,6 +68,8 @@ class Deck:
 	
 	#Print out the deck, for testing
 	def showAll(self):
+		if(self.isEmpty()):
+			print "is empty"
 		for i in range(0, len(self.deck)):
 			print self.deck[i],
 	
@@ -88,6 +90,7 @@ class Card(object):
 		self.x = 450
 		self.y = 570
 		self.image = image
+		self.fromDeck = False
 
 	#When str() is used on Card, [X Y] will be the output 
 	#where X is the suit of the card and Y is the rank

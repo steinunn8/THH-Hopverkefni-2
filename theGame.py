@@ -55,6 +55,7 @@ class theGame(object):
 	def pick(self, x): #x is a card
 		y = self.trash.show()
 		if(self.isLegal(x)):
+			x.formDeck = False
 			self.trash.addFirst(x) 		#add card to trash if legal
 			self.pyramid.remove(x)      #remove card from pyramid list
 			x.delete()				
@@ -68,6 +69,7 @@ class theGame(object):
 			joker_img = pygame.image.load('joker.png')
 			return Deck.Card("Joker", 100, True, joker_img)	
 		card = self.deck.draw()
+		card.fromDeck = True
 		self.trash.addFirst(card)
 		return card
 
