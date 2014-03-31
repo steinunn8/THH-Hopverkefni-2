@@ -167,3 +167,4 @@ class Score(object):
 		sWin = '          ' + str(win) + " points for winning the game. \n"
 
 		return sTime + sDeck + sPyr + sWin
+		
