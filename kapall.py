@@ -370,7 +370,7 @@ class Frame(wx.Frame):
         self.help_frame.Show()
 
     def onGiveUp(self, event):
-        score = Scores.score(game)
+        score = Scores.Score(game)
         total = str(score.getScore())
         divided = score.getDivided()
         self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = False)

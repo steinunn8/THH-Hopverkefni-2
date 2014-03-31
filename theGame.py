@@ -111,8 +111,3 @@ class theGame(object):
 
 	def redoDraw(self, x):
 		self.trash.addFirst(x)
-
-	#def addScore(self):
-	#	score = self.scoreThing.getScore()
-	#	scoreStr = str(score) + '\n'
-	#	self.scoreThing.addScore(scoreStr)
