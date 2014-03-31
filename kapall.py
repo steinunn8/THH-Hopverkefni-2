@@ -316,7 +316,7 @@ class Frame(wx.Frame):
         m_help = menu.Append(wx.ID_HELP, "&Help", "Get help.")
         self.Bind(wx.EVT_MENU, self.getHelp, m_help)
         # GIVE UP
-        m_give_up = menu.Append(wx.ID_PREVIEW, "&Give Up", "Give up and save score")
+        m_give_up = menu.Append(wx.ID_ABORT, "&Give Up", "Give up and save score")
         self.Bind(wx.EVT_MENU, self.onGiveUp, m_give_up)
 
         """menu = wx.Menu() # Take this one ....
