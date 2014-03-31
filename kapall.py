@@ -447,6 +447,8 @@ class LevelFrame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, 'Choose level')
         wx.Frame.CenterOnScreen(self)
+
+        self.Bind(wx.EVT_CLOSE, self.Kill)
         
         self.grid = wx.GridBagSizer(hgap=3, vgap=3)
         
@@ -519,6 +521,12 @@ class LevelFrame(wx.Frame):
             self.height = 7
             self.sortsOn = True
 
+    def Kill(self, event):
+        # if user doesn't pick level he get's level 1
+        game_level_1 = theGame.theGame(5, False)
+        app.frame.display.start_game(game_level_1)
+        self.Destroy()
+
 #Frame for help text from menu
 class HelpFrame(wx.Frame):
     def __init__(self, parent, temp):
@@ -560,6 +568,9 @@ class PostHighScoreFrame(wx.Frame):
         self.won = won
         wx.Frame.__init__(self, parent, -1, 'Game over!', size = (500,700))
         wx.Frame.CenterOnScreen(self)
+
+        self.Bind(wx.EVT_CLOSE, self.Kill)
+        
         self.SetBackgroundColour('#FFFFFF')
         self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         self.score_panel = wx.Panel(self, -1, size = (500,200))
@@ -593,6 +604,11 @@ class PostHighScoreFrame(wx.Frame):
     
     def OnSize(self, event):
         self.Layout()
+
+    def Kill(self, event):
+        app.level_frame = LevelFrame(parent = None)
+        app.level_frame.Show()
+        self.Destroy()
 
     def pandaGif(self):
         # Gif part
