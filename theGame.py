@@ -55,6 +55,8 @@ class theGame(object):
 	def pick(self, x): #x is a card
 		y = self.trash.show()
 		if(self.isLegal(x)):
+			x.x = 450
+			x.y = 570
 			x.formDeck = False
 			self.trash.addFirst(x) 		#add card to trash if legal
 			self.pyramid.remove(x)      #remove card from pyramid list
