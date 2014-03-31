@@ -10,6 +10,7 @@ class SpriteCard(pygame.sprite.Sprite):
 
         self.orig_pos = pos
         self.real_card = real_card
+        self.card_moving = False
 
         # set sprite image
         if (self.real_card.up):
@@ -22,14 +23,21 @@ class SpriteCard(pygame.sprite.Sprite):
 
     def update(self):
         mouse_pos = app.frame.ScreenToClient(wx.GetMousePosition())
-        
+
+        # checking if any other card is on the move
+        any_card_moving = False
+        for card in app.frame.display.pyramid_cards:
+            if (card.card_moving and card != self):
+                any_card_moving = True
+                
         # if the mouse clicks on the card
         if (app.frame.display.mouse_down and self.rect.collidepoint(mouse_pos)
-            and not app.frame.display.card_moving):
+            and not any_card_moving):
             if (self.real_card.up):
                 # move the card with the mouse
                 self.rect.center = mouse_pos
-                app.frame.display.card_moving = True
+                #app.frame.display.card_moving = True
+                self.card_moving = True
             else:
                 # put front image if card is available
                 self.real_card.isAvailable()
@@ -74,7 +82,6 @@ class PygameDisplay(wx.Window):
         self.start_time = 0
         self.minutes = 0
         self.mouse_down = False
-        self.card_moving = False
         self.white = (255, 255, 255)
 
         self.background = pygame.image.load("backgrounds/beach.jpeg")
@@ -110,8 +117,6 @@ class PygameDisplay(wx.Window):
             self.pyramid_cards.add(self.pyramid_card)
         
     def Update(self, event):
-        self.card_moving = False
-
         # update cards
         self.pyramid_cards.update()
 
@@ -167,7 +172,12 @@ class PygameDisplay(wx.Window):
     def onMouseUp(self, event):
         self.mouse_down = False
 
+        # check if user tried to move card to deck
         self.check_card_to_deck()
+
+        # no card is moving anymore
+        for card in self.pyramid_cards:
+            card.card_moving = False
         
     def check_card_to_deck(self):
         # check if card is moved to deck
@@ -183,12 +193,17 @@ class PygameDisplay(wx.Window):
         self.compare_card = SpriteCard([self.last_compare_card.real_card.x, self.last_compare_card.real_card.y], card.real_card)
         self.pile_cards.add(self.compare_card)
         self.last_compare_card = self.compare_card
+        
         # remove card from pyramid
         card.kill()
+
+        # check if game is won
         self.game_won()
+
+        # make it impossible to "undo"
         app.frame.onUndoDone()
 
-    def drawNewCard(self, event):        
+    def drawNewCard(self, event):
         self.draw_card()
 
     def draw_card(self):
@@ -277,14 +292,21 @@ class PygameDisplay(wx.Window):
             self.post_score_frame.Show()  
 	
     def undo_draw(self):
-        self.game.undoDraw(self.compare_card.real_card)   # put card back in pile
-        self.future_card = self.compare_card    # save card for redo option
+        # put card back in pile
+        self.game.undoDraw(self.compare_card.real_card)
+
+        # save card for redo option
+        self.future_card = self.compare_card
+
+        # remove current card
         self.compare_card.kill()
+
+        # get last card
         self.compare_card = SpriteCard([self.undo_compare_card.real_card.x, self.undo_compare_card.real_card.y], self.undo_compare_card.real_card)
         self.pile_cards.add(self.compare_card)
-        print "undo: ", self.compare_card.real_card
 
     def redo_draw(self):
+        # draw card again
         self.draw_card()
          
 class Frame(wx.Frame):
@@ -585,7 +607,6 @@ class PostHighScoreFrame(wx.Frame):
         self.main_sizer.Add(self.gif_panel,0)
         self.main_sizer.Add(self.bottom_sizer,0)
 		
-        #Entering name for score:
         self.name_panel = wx.Panel(self, -1, size = (500,700))
         self.name = ""
         self.lblname = wx.StaticText(self.name_panel, label="Enter name:", pos = (60, 552))
@@ -652,6 +673,6 @@ class App(wx.App):
 
     
 if __name__ == "__main__":
-    dummy_game = theGame.theGame(4)  #used to get access ti help.txt and allScore.txt
+    dummy_game = theGame.theGame(4)  # used to get access to help.txt and allScores.txt
     app = App()
     app.MainLoop()
