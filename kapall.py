@@ -207,8 +207,8 @@ class PygameDisplay(wx.Window):
             self.compare_card = SpriteCard([new_card.x, new_card.y], new_card)
             self.pile_cards.add(self.compare_card)
             self.last_compare_card = self.compare_card
-            self.game.fromDeck = True
-
+            app.frame.onUndoDone()
+           
     def draw_points(self):
         #self.points = Scores.getCurrentPoints(self.game)
         self.points = self.game.scoreThing.getCurrentPoints()
