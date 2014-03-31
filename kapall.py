@@ -16,12 +16,14 @@ class SpriteCard(pygame.sprite.Sprite):
         if (self.real_card.up):
             self.image = real_card.image
         else:
-             self.image = pygame.image.load('card_back.jpg')
+             self.image = app.frame.display.back_image
 
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
     def update(self):
+        if (not self.real_card.up):
+            self.image = app.frame.display.back_image
         mouse_pos = app.frame.ScreenToClient(wx.GetMousePosition())
 
         # checking if any other card is on the move
@@ -66,13 +68,17 @@ class PygameDisplay(wx.Window):
         self.fps = 60.0
         self.timespacing = 1000.0 / self.fps
         self.timer.Start(self.timespacing, False)
+        
+        self.deck_img_file = "cardImages/card_back.jpg"
+        
+        self.back_image = pygame.image.load('cardImages/card_back.jpg')
 
         # game stuff     
         pygame.init()
         self.screen = pygame.Surface(self.size, 0, 32)
 
         # draw draw button
-        self.deck_image_file = "card_back.jpg"
+        self.deck_image_file = self.deck_img_file
         self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         self.draw_button = wx.BitmapButton(self, id=-1, bitmap=self.deck_image,
             pos=(700, 510), size = (self.deck_image.GetWidth()+5, self.deck_image.GetHeight()+5))
@@ -99,7 +105,7 @@ class PygameDisplay(wx.Window):
 
     def generate_deck(self):
          # deck to draw new card
-        self.deck_image_file = "card_back.jpg"
+        self.deck_image_file = self.deck_img_file
         self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         self.draw_button.SetBitmapLabel(self.deck_image)
         self.Bind(wx.EVT_BUTTON, self.drawNewCard, self.draw_button)
@@ -360,6 +366,20 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.choose_background5, background5)
         looks.AppendMenu(wx.NewId(), "Choose background", backgrounds)
         
+        #change card image
+        cardImages = wx.Menu()
+        cardImage1 = cardImages.Append(wx.NewId(), "Linux")
+        self.Bind(wx.EVT_MENU, self.choose_cardImage1, cardImage1)
+        cardImage2 = cardImages.Append(wx.NewId(), "Classic red")
+        self.Bind(wx.EVT_MENU, self.choose_cardImage2, cardImage2)
+        cardImage3 = cardImages.Append(wx.NewId(), "Aces")
+        self.Bind(wx.EVT_MENU, self.choose_cardImage3, cardImage3)
+        cardImage4 = cardImages.Append(wx.NewId(), "Panda love")
+        self.Bind(wx.EVT_MENU, self.choose_cardImage4, cardImage4)
+        cardImage5 = cardImages.Append(wx.NewId(), "Wat")
+        self.Bind(wx.EVT_MENU, self.choose_cardImage5, cardImage5)
+        looks.AppendMenu(wx.NewId(), "Choose card image", cardImages)
+        
         self.toolbar = self.CreateToolBar()
         tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'))
         tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'))
@@ -461,7 +481,32 @@ class Frame(wx.Frame):
     def choose_background5(self, event):
         self.display.background = pygame.image.load("backgrounds/panda.png")
         self.display.background_rect = self.display.background.get_rect()
-    
+        
+    def choose_cardImage1(self, event):
+        self.display.deck_img_file = 'cardImages/card_back.jpg'
+        self.display.generate_deck()
+        self.display.back_image = pygame.image.load("cardImages/card_back.jpg")
+    	
+    def choose_cardImage2(self, event):
+        self.display.deck_img_file = 'cardImages/classic_red.png'
+        self.display.generate_deck()
+        self.display.back_image = pygame.image.load("cardImages/classic_red.png")
+    	
+    def choose_cardImage3(self, event):
+        self.display.deck_img_file = 'cardImages/aces.png'
+        self.display.generate_deck()
+        self.display.back_image = pygame.image.load("cardImages/aces.png")
+
+    def choose_cardImage4(self, event):
+        self.display.deck_img_file = 'cardImages/pandalove.jpeg'
+        self.display.generate_deck()
+        self.display.back_image = pygame.image.load("cardImages/pandalove.jpeg")
+
+    def choose_cardImage5(self, event):
+        self.display.deck_img_file = 'cardImages/wat.jpeg'
+        self.display.generate_deck()
+        self.display.back_image = pygame.image.load("cardImages/wat.jpeg")
+
 class LevelFrame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, 'Choose level')
@@ -615,6 +660,12 @@ class PostHighScoreFrame(wx.Frame):
         self.editname = wx.TextCtrl(self.name_panel, size=(140, -1), pos = (130,550))
         self.button = wx.Button(self.name_panel, label="Save score", pos = (280,549))
         self.button.Bind(wx.EVT_BUTTON, self.OnButton)
+        
+        self.newgame = wx.Button(self.name_panel, label="New game", pos = (120,620))
+        self.newgame.Bind(wx.EVT_BUTTON, self.newGame)
+        
+        self.quitgame = wx.Button(self.name_panel, label="Quit game", pos = (230,620))
+        self.quitgame.Bind(wx.EVT_BUTTON, self.quitGame)
 		
         self.main_sizer.Fit(self)
     
@@ -647,6 +698,15 @@ class PostHighScoreFrame(wx.Frame):
         self.game.scoreThing.addName(nameStr)
         self.game.scoreThing.addScore(scoreStr)
         self.button.Disable()
+    
+    def newGame(self, event):
+    	self.Destroy()
+    	app.level_frame = LevelFrame(parent = None)
+    	app.level_frame.Show()
+    	
+    def quitGame(self, event):
+    	self.Destroy()
+    	app.frame.Destroy()
 
 class App(wx.App):
     def OnInit(self):
@@ -661,14 +721,14 @@ class App(wx.App):
 
         
         #test for win window
-        """
+        '''
         game = theGame.theGame(4, False)
         score = Scores.score(game)
         total = str(score.getScore())
         divided = score.getDivided()
         self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = False)
         self.post_score_frame.Show()
-        """
+        '''
         return True
 
     
