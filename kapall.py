@@ -195,7 +195,7 @@ class PygameDisplay(wx.Window):
         # remove last card
         self.compare_card.kill()
 
-        if (game.deck.isEmpty()):
+        if (self.game.deck.isEmpty()):
             # display a joker on the deck if it's empty
             self.deck_image_file = "joker.png"        
             self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -289,7 +289,6 @@ class PygameDisplay(wx.Window):
          
 class Frame(wx.Frame):
     def __init__(self, parent):
-        global game
         wx.Frame.__init__(self, parent, -1, size = (900, 750))
         wx.Frame.CenterOnScreen(self)
         self.display = PygameDisplay(self, -1)
@@ -297,7 +296,6 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
         self.undoClicked = True
-        self.game = game
 
         # menu bar
         menuBar = wx.MenuBar()
@@ -373,21 +371,20 @@ class Frame(wx.Frame):
         app.level_frame.Show()
 
     def getHighScores(self, event):
-        #global game
-        #self.game = game
-        temp = self.game.scoreThing.getHighScoreString()
+        global dummy_game
+        temp = dummy_game.scoreThing.getHighScoreString()
         self.high_score_frame = HighScoreFrame(parent = None, temp = temp)
         self.high_score_frame.Show()
 
     def getHelp(self, event):
-        #global game
-        #self.game = game
-        temp = self.game.scoreThing.getHelp()
+        global dummy_game
+        temp = dummy_game.scoreThing.getHelp()
         self.help_frame = HelpFrame(parent = None, temp = temp)
         self.help_frame.Show()
 
     def onGiveUp(self, event):
-        score = Scores.Score(game)
+        self.game = self.display.game
+        score = self.game.scoreThing
         total = str(score.getScore())
         divided = score.getDivided()
         self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = False)
@@ -496,7 +493,6 @@ class LevelFrame(wx.Frame):
         self.SetSizerAndFit(self.sizer)
 
     def start_game(self, event):
-    	global game
     	game = theGame.theGame(self.height, self.sortsOn)
     	app.frame.display.start_game(game)
     	self.Destroy()
@@ -589,7 +585,7 @@ class PostHighScoreFrame(wx.Frame):
         self.main_sizer.Add(self.gif_panel,0)
         self.main_sizer.Add(self.bottom_sizer,0)
 		
-        #---Johanna start---
+        #Entering name for score:
         self.name_panel = wx.Panel(self, -1, size = (500,700))
         self.name = ""
         self.lblname = wx.StaticText(self.name_panel, label="Enter name:", pos = (60, 552))
@@ -598,7 +594,6 @@ class PostHighScoreFrame(wx.Frame):
         self.editname = wx.TextCtrl(self.name_panel, size=(140, -1), pos = (130,550))
         self.button = wx.Button(self.name_panel, label="Save score", pos = (280,549))
         self.button.Bind(wx.EVT_BUTTON, self.OnButton)
-        #---Johanna end-----
 		
         self.main_sizer.Fit(self)
     
@@ -622,11 +617,10 @@ class PostHighScoreFrame(wx.Frame):
         # continuously loop through the frames of the gif file (default)
         self.gif.Play()
 
-    #---Johanna again--------
     def OnButton(self, e):
         self.name = self.editname.GetValue()
-        global game
-        self.game = game
+        global dummy_game
+        self.game = dummy_game
         nameStr = self.name + '\t'
         scoreStr = str(self.total) + '\n'
         self.game.scoreThing.addName(nameStr)
@@ -658,6 +652,6 @@ class App(wx.App):
 
     
 if __name__ == "__main__":
-    game = theGame.theGame(4)  
+    dummy_game = theGame.theGame(4)  #used to get access ti help.txt and allScore.txt
     app = App()
     app.MainLoop()
