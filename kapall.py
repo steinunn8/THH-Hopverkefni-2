@@ -484,27 +484,32 @@ class Frame(wx.Frame):
         
     def choose_cardImage1(self, event):
         self.display.deck_img_file = 'cardImages/card_back.jpg'
-        self.display.generate_deck()
+        self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.display.draw_button.SetBitmapLabel(self.display.deck_image)
         self.display.back_image = pygame.image.load("cardImages/card_back.jpg")
     	
     def choose_cardImage2(self, event):
         self.display.deck_img_file = 'cardImages/classic_red.png'
-        self.display.generate_deck()
+        self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.display.draw_button.SetBitmapLabel(self.display.deck_image)
         self.display.back_image = pygame.image.load("cardImages/classic_red.png")
     	
     def choose_cardImage3(self, event):
         self.display.deck_img_file = 'cardImages/aces.png'
-        self.display.generate_deck()
+        self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.display.draw_button.SetBitmapLabel(self.display.deck_image)
         self.display.back_image = pygame.image.load("cardImages/aces.png")
 
     def choose_cardImage4(self, event):
         self.display.deck_img_file = 'cardImages/pandalove.jpeg'
-        self.display.generate_deck()
+        self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.display.draw_button.SetBitmapLabel(self.display.deck_image)
         self.display.back_image = pygame.image.load("cardImages/pandalove.jpeg")
 
     def choose_cardImage5(self, event):
         self.display.deck_img_file = 'cardImages/wat.jpeg'
-        self.display.generate_deck()
+        self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        self.display.draw_button.SetBitmapLabel(self.display.deck_image)
         self.display.back_image = pygame.image.load("cardImages/wat.jpeg")
 
 class LevelFrame(wx.Frame):
