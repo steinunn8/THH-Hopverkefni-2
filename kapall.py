@@ -631,70 +631,109 @@ class HighScoreFrame(wx.Frame):
 
 #Frame for showing users score when he wins
 class PostHighScoreFrame(wx.Frame):
-    def __init__(self, parent, total, divided, won = True):
-        self.total = total
-        self.won = won
-        wx.Frame.__init__(self, parent, -1, 'Game over!', size = (500,700))
+    def __init__(self, parent, total, divided, won = False):
+        wx.Frame.__init__(self, parent, -1, 'Your score', size = (509, 700))
         wx.Frame.CenterOnScreen(self)
-
+        self.total = total
+        self.divided = divided
+        self.won = won
+        self.initFrame()
         self.Bind(wx.EVT_CLOSE, self.Kill)
-        
-        self.SetBackgroundColour('#FFFFFF')
-        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.score_panel = wx.Panel(self, -1, size = (500,200))
-        self.score_panel.SetBackgroundColour("indigo")
-        self.gif_panel = wx.Panel(self, -1, size = (500,530))
-        self.gif_panel.SetBackgroundColour("indigo")
- 
-        self.bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.bottom_sizer.Add(self.score_panel,0, wx.EXPAND)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-        #Score part:
-        score_text = '\n     You got ' + total + ' points \n     Your points divide like this:\n'+ divided
-        self.text = wx.StaticText(self.score_panel, -1, score_text, style=wx.ALIGN_LEFT)
-        self.text.Wrap(1000)
-        self.pandaGif()
-        self.main_sizer.Add(self.gif_panel,0)
-        self.main_sizer.Add(self.bottom_sizer,0)
-		
-        self.name_panel = wx.Panel(self, -1, size = (500,700))
-        self.name = ""
-        self.lblname = wx.StaticText(self.name_panel, label="Enter name:", pos = (60, 552))
-        self.lblscore = wx.StaticText(self.name_panel, label="Score:", pos = (60, 575))
-        self.theScore = wx.StaticText(self.name_panel, label=str(total), pos = (130, 575))
-        self.editname = wx.TextCtrl(self.name_panel, size=(140, -1), pos = (130,550))
-        self.button = wx.Button(self.name_panel, label="Save score", pos = (280,549))
-        self.button.Bind(wx.EVT_BUTTON, self.OnButton)
-        
-        self.newgame = wx.Button(self.name_panel, label="New game", pos = (120,620))
-        self.newgame.Bind(wx.EVT_BUTTON, self.newGame)
-        
-        self.quitgame = wx.Button(self.name_panel, label="Quit game", pos = (230,620))
-        self.quitgame.Bind(wx.EVT_BUTTON, self.quitGame)
-		
-        self.main_sizer.Fit(self)
-    
+
     def OnSize(self, event):
         self.Layout()
 
     def Kill(self, event):
-        app.level_frame = LevelFrame(parent = None)
-        app.level_frame.Show()
+        #app.level_frame = LevelFrame(parent = None)
+        #app.level_frame.Show()
         self.Destroy()
 
-    def pandaGif(self):
+    #   calls methods that make panels to hold buttons, texts and pictures
+    def initFrame(self):
+        self.panel = wx.Panel(self)
+        self.panel.SetBackgroundColour('#4f5049')
+        self.vbox = wx.BoxSizer(wx.VERTICAL)
+        self.makeGif(self.won)        
+        self.makeScorePan(self.total, self.divided)
+        self.makeName()
+        self.makeGamePan()
+
+        self.panel.SetSizer(self.vbox)
+
+    def makeGif(self, won):
+        self.gifPan = wx.Panel(self.panel, size = (499,335))
+        self.gifPan.SetBackgroundColour('#001100')
+        self.pos = (-1,-1)
         # Gif part
-        if (self.won):
+        if (won):
             gif_file = "panda.gif"
+            #self.pos = (-1,-1)
         else:
             gif_file = "pandagiveup.gif"
-        self.gif = wx.animate.GIFAnimationCtrl(self.gif_panel, -1, gif_file, pos= (0,200))
+            self.pos = (200,50)
+        self.gif = wx.animate.GIFAnimationCtrl(self.gifPan, -1, gif_file, pos = self.pos)
         # clears the background
         self.gif.GetPlayer().UseBackgroundColour(True)
         # continuously loop through the frames of the gif file (default)
         self.gif.Play()
+        self.vbox.Add(self.gifPan, 1, wx.EXPAND | wx.ALL, 5)
 
-    def OnButton(self, e):
+    def makeScorePan(self, total, divided):
+        print total
+        print divided
+        self.scorePan = wx.Panel(self.panel, size = (510,140))
+        # mint color = #a4dba3
+        self.scorePan.SetBackgroundColour('#a4dba3')
+        score_text = '\n     You got ' + total + ' points \n     Your points divide like this:\n'+ divided
+        self.text = wx.StaticText(self.scorePan, -1, score_text, style=wx.ALIGN_LEFT, pos = (50,5))
+        self.text.Wrap(1000)
+        self.vbox.Add(self.scorePan, 1, wx.EXPAND | wx.ALL, 5)
+
+    #   creates the options to end game or start new
+    def makeGamePan(self):
+        self.gamePan = wx.Panel(self.panel)
+        #   cosy pink color = #FF99CC
+        self.gamePan.SetBackgroundColour('#FF99CC')
+        self.hbox = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.quitgame = wx.Button(self.gamePan, label="Quit game")
+        #self.quitgame = wx.Button(self.gamePan, label="Quit game", pos = (230,0))
+        self.quitgame.Bind(wx.EVT_BUTTON, self.quitGame)
+        self.hbox.Add(self.quitgame,1, wx.EXPAND | wx.ALL)
+
+        #self.newgame = wx.Button(self.gamePan, label="New game", pos = (120,0))
+        self.newgame = wx.Button(self.gamePan, label="New game")
+        self.hbox.Add(self.newgame,1, wx.EXPAND | wx.ALL)
+        self.newgame.Bind(wx.EVT_BUTTON, self.newGame)
+
+
+        self.gamePan.SetSizer(self.hbox)
+        self.vbox.Add(self.gamePan, 1, wx.EXPAND | wx.ALL, 5)
+
+    def newGame(self, event):
+        self.Destroy()
+        app.level_frame = LevelFrame(parent = None)
+        app.level_frame.Show()
+        
+    def quitGame(self, event):
+        self.Destroy()
+        app.frame.Destroy()
+
+    def makeName(self):
+        self.namePan = wx.Panel(self.panel)
+        # yellow cream = #eefaa8
+        self.namePan.SetBackgroundColour('#eefaa8')
+        #self.name_panel = wx.Panel(self, -1, size = (500,700))
+        self.name = ""
+        self.lblname = wx.StaticText(self.namePan, label="Enter name:", pos = (60, 5))
+        self.lblscore = wx.StaticText(self.namePan, label="Score:", pos = (60, 45))
+        self.theScore = wx.StaticText(self.namePan, label=str(self.total), pos = (200, 45))
+        self.editname = wx.TextCtrl(self.namePan, size=(140, -1), pos = (200,5))
+        self.button = wx.Button(self.namePan, label="Save score", pos = (300,35))
+        self.button.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.vbox.Add(self.namePan, 1, wx.EXPAND | wx.ALL, 5)
+    
+    def OnButton(self, event):
         self.name = self.editname.GetValue()
         global dummy_game
         self.game = dummy_game
@@ -703,15 +742,6 @@ class PostHighScoreFrame(wx.Frame):
         self.game.scoreThing.addName(nameStr)
         self.game.scoreThing.addScore(scoreStr)
         self.button.Disable()
-    
-    def newGame(self, event):
-    	self.Destroy()
-    	app.level_frame = LevelFrame(parent = None)
-    	app.level_frame.Show()
-    	
-    def quitGame(self, event):
-    	self.Destroy()
-    	app.frame.Destroy()
 
 class App(wx.App):
     def OnInit(self):
