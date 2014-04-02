@@ -3,7 +3,7 @@ import wx.animate
 from pygame.locals import*
 import theGame, Scores
 
-
+# A sprite class for the cards
 class SpriteCard(pygame.sprite.Sprite):
     def __init__(self, pos, real_card):
         pygame.sprite.Sprite.__init__(self)
@@ -22,8 +22,11 @@ class SpriteCard(pygame.sprite.Sprite):
         self.rect.center = pos
 
     def update(self):
+        # set image on card
         if (not self.real_card.up):
             self.image = app.frame.display.back_image
+            
+        # get mouse position
         mouse_pos = app.frame.ScreenToClient(wx.GetMousePosition())
 
         # checking if any other card is on the move
@@ -32,13 +35,12 @@ class SpriteCard(pygame.sprite.Sprite):
             if (card.card_moving and card != self):
                 any_card_moving = True
                 
-        # if the mouse clicks on the card
+        # move or flip card
         if (app.frame.display.mouse_down and self.rect.collidepoint(mouse_pos)
             and not any_card_moving):
             if (self.real_card.up):
                 # move the card with the mouse
                 self.rect.center = mouse_pos
-                #app.frame.display.card_moving = True
                 self.card_moving = True
             else:
                 # put front image if card is available
@@ -49,13 +51,12 @@ class SpriteCard(pygame.sprite.Sprite):
             # move the card to it's original position
             self.rect.center = self.orig_pos
         
-    
+# The game display    
 class PygameDisplay(wx.Window):
     def __init__(self, parent, ID):
         wx.Window.__init__(self, parent, ID)
         self.parent = parent
-        self.hwnd = self.GetHandle()
-       
+        self.hwnd = self.GetHandle()       
         self.size = self.GetSizeTuple()
         self.size_dirty = True
 
@@ -69,16 +70,13 @@ class PygameDisplay(wx.Window):
         self.timespacing = 1000.0 / self.fps
         self.timer.Start(self.timespacing, False)
         
-        self.deck_img_file = "cardImages/card_back.jpg"
-        
-        self.back_image = pygame.image.load('cardImages/card_back.jpg')
-
         # game stuff     
         pygame.init()
         self.screen = pygame.Surface(self.size, 0, 32)
         self.first_game = True
 
         # draw draw button
+        self.deck_img_file = "cardImages/card_back.jpg"
         self.deck_image_file = self.deck_img_file
         self.deck_image = wx.Image(self.deck_image_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         self.draw_button = wx.BitmapButton(self, id=-1, bitmap=self.deck_image,
@@ -94,6 +92,7 @@ class PygameDisplay(wx.Window):
         self.last_time = int(self.game.getTime()) - self.start_time
         self.game_over = False
 
+        self.back_image = pygame.image.load('cardImages/card_back.jpg')
         self.background = pygame.image.load("backgrounds/panda.png")
         self.background_rect = self.background.get_rect()
         
@@ -107,11 +106,11 @@ class PygameDisplay(wx.Window):
         app.frame.disableUndo()
         app.frame.disableRedo()
 
+        # only bind update method on first game
         if (self.first_game):
             self.Bind(wx.EVT_PAINT, self.OnPaint)
             self.Bind(wx.EVT_TIMER, self.Update, self.timer)
             self.first_game = False
-
 
     def generate_deck(self):
          # deck to draw new card
@@ -191,7 +190,7 @@ class PygameDisplay(wx.Window):
         # check if user tried to move card to deck
         self.check_card_to_deck()
 
-        # no card is moving anymore
+        # make sure no card is moving anymore
         for card in self.pyramid_cards:
             card.card_moving = False
         
@@ -261,14 +260,15 @@ class PygameDisplay(wx.Window):
         self.screen.blit(self.points_image, self.points_rect)
     
     def draw_bonustime(self):
+        # stop drawing time if game is over
         if(self.game_over):
             self.bonustime = self.last_bonustime
         else:
             self.bonustime = self.game.scoreThing.getBonusTime()
+            
+        # draw points
         black = (0,0,0)
         pos = (780, 50)
-        
-        # draw points
         self.bonustime_font = pygame.font.SysFont("Arial", 20)
         self.bonustime_image = self.bonustime_font.render(str(self.bonustime), 1, black)
         self.bonustime_rect = self.bonustime_image.get_rect()
@@ -299,8 +299,7 @@ class PygameDisplay(wx.Window):
 
         # display time
         black = (0,0,0)
-        pos = (100, 50)
-        
+        pos = (100, 50)      
         self.time_font = pygame.font.SysFont("Arial", 20)
         self.time_image = self.time_font.render(str(self.time), 1, black)
         self.time_rect = self.time_image.get_rect()
@@ -321,9 +320,6 @@ class PygameDisplay(wx.Window):
         # put card back in pile
         self.game.undoDraw(self.compare_card.real_card)
 
-        # save card for redo option
-        self.future_card = self.compare_card
-
         # remove current card
         self.compare_card.kill()
 
@@ -335,6 +331,7 @@ class PygameDisplay(wx.Window):
         # draw card again
         self.draw_card()
          
+# The frame that holds everything
 class Frame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, size = (900, 750))
@@ -343,6 +340,7 @@ class Frame(wx.Frame):
         
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_CLOSE, self.Kill)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
         self.undoClicked = True
 
         # menu bar
@@ -361,10 +359,9 @@ class Frame(wx.Frame):
         # GIVE UP
         m_give_up = menu.Append(wx.ID_ABORT, "&Give Up", "Give up and save score")
         self.Bind(wx.EVT_MENU, self.onGiveUp, m_give_up)
-        # EXTI
+        # EXIT
         m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
         self.Bind(wx.EVT_MENU, self.Kill, m_exit)
-
         # change looks
         looks = wx.Menu()
         menuBar.Append(looks, "&Looks")
@@ -380,8 +377,7 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.choose_background4, background4)
         background5 = backgrounds.Append(wx.NewId(), "Unicorn")
         self.Bind(wx.EVT_MENU, self.choose_background5, background5)
-        looks.AppendMenu(wx.NewId(), "Choose background", backgrounds)
-        
+        looks.AppendMenu(wx.NewId(), "Choose background", backgrounds)       
         #change card image
         cardImages = wx.Menu()
         cardImage1 = cardImages.Append(wx.NewId(), "Linux")
@@ -395,20 +391,18 @@ class Frame(wx.Frame):
         cardImage5 = cardImages.Append(wx.NewId(), "Wat")
         self.Bind(wx.EVT_MENU, self.choose_cardImage5, cardImage5)
         looks.AppendMenu(wx.NewId(), "Choose card image", cardImages)
-        
+
+        # undo/redo
         self.toolbar = self.CreateToolBar()
         tundo = self.toolbar.AddLabelTool(wx.ID_UNDO, '', wx.Bitmap('tundo.png'))
         tredo = self.toolbar.AddLabelTool(wx.ID_REDO, '', wx.Bitmap('tredo.png'))
         self.toolbar.EnableTool(wx.ID_REDO, False)
         self.toolbar.Realize()
-
         self.Bind(wx.EVT_MENU, self.onUndo, tundo)
         self.Bind(wx.EVT_MENU, self.onRedo, tredo)
 
         self.SetMenuBar(menuBar)       
         self.SetTitle("Pyramid")
-
-        self.Bind(wx.EVT_SIZE, self.OnSize)
        
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.display, 1, flag = wx.EXPAND)
@@ -510,7 +504,7 @@ class Frame(wx.Frame):
         self.display.background_rect = self.display.background.get_rect()
        
 
-    # Functions for choosing backgrounds
+    # Functions for choosing card images
     def choose_cardImage1(self, event):
         self.display.deck_img_file = 'cardImages/card_back.jpg'
         self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -550,17 +544,18 @@ class LevelFrame(wx.Frame):
 
         self.Bind(wx.EVT_CLOSE, self.Kill)
         
-        self.grid = wx.GridBagSizer(hgap=3, vgap=3)
-        
+        self.grid = wx.GridBagSizer(hgap=3, vgap=3)    
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.SetBackgroundColour('#a4dba3')
-		
-        self.fyrirsogn = wx.StaticText(self, label="Choose a level") #pos = (140,20)
+
+	# choose level	
+        self.fyrirsogn = wx.StaticText(self, label="Choose a level")
         self.fyrirsognFont = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.NORMAL)
         self.fyrirsogn.SetFont(self.fyrirsognFont)
         self.sizer.Add(self.fyrirsogn, flag=wx.ALL|wx.EXPAND, border=20)
-        
+
+        # levels
         self.level1 = wx.RadioButton(self, 1, "Level 1 : 5 rows and color doesn't matter")
         self.grid.Add(self.level1, pos=(0,0), span=(1,2))
         self.Bind(wx.EVT_RADIOBUTTON, self.Levels, self.level1)
@@ -591,12 +586,14 @@ class LevelFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.start_game, self.start_game_button)
         self.sizer.Add(self.start_game_button, 0, wx.ALIGN_CENTER, 20)
 
+        # default options
         self.height = 7
         self.sortsOn = True
         
         self.SetSizerAndFit(self.sizer)        
 
     def start_game(self, event):
+        # display screen when you first run it
         if (app.first_game):
             app.frame.Show()
             app.first_game = False
@@ -703,7 +700,6 @@ class PostHighScoreFrame(wx.Frame):
         # Gif part
         if (won):
             gif_file = "panda.gif"
-            #self.pos = (-1,-1)
         else:
             gif_file = "pandagiveup.gif"
             self.pos = (200,50)
@@ -716,9 +712,8 @@ class PostHighScoreFrame(wx.Frame):
 
     def makeScorePan(self, total, divided):
         self.scorePan = wx.Panel(self.panel, size = (510,140))
-        # mint color = #a4dba3
-        self.scorePan.SetBackgroundColour('#a4dba3')
-        score_text = '\n     You got ' + total + ' points \n     Your points divide like this:\n'+ divided
+        self.scorePan.SetBackgroundColour('#a4dba3') # mint color
+        score_text = '\n You got ' + total + ' points \n Your points divide like this:\n'+ divided
         self.text = wx.StaticText(self.scorePan, -1, score_text, style=wx.ALIGN_LEFT, pos = (50,5))
         self.text.Wrap(1000)
         self.vbox.Add(self.scorePan, 1, wx.EXPAND | wx.ALL, 5)
@@ -726,20 +721,16 @@ class PostHighScoreFrame(wx.Frame):
     #   creates the options to end game or start new
     def makeGamePan(self):
         self.gamePan = wx.Panel(self.panel)
-        #   cosy pink color = #FF99CC
-        self.gamePan.SetBackgroundColour('#FF99CC')
+        self.gamePan.SetBackgroundColour('#FF99CC') # cosy pink color
         self.hbox = wx.BoxSizer(wx.HORIZONTAL)
 
         self.quitgame = wx.Button(self.gamePan, label="Quit game")
-        #self.quitgame = wx.Button(self.gamePan, label="Quit game", pos = (230,0))
         self.quitgame.Bind(wx.EVT_BUTTON, self.quitGame)
         self.hbox.Add(self.quitgame,1, wx.EXPAND | wx.ALL)
 
-        #self.newgame = wx.Button(self.gamePan, label="New game", pos = (120,0))
         self.newgame = wx.Button(self.gamePan, label="New game")
         self.hbox.Add(self.newgame,1, wx.EXPAND | wx.ALL)
         self.newgame.Bind(wx.EVT_BUTTON, self.newGame)
-
 
         self.gamePan.SetSizer(self.hbox)
         self.vbox.Add(self.gamePan, 1, wx.EXPAND | wx.ALL, 5)
@@ -755,9 +746,7 @@ class PostHighScoreFrame(wx.Frame):
 
     def makeName(self):
         self.namePan = wx.Panel(self.panel)
-        # yellow cream = #eefaa8
-        self.namePan.SetBackgroundColour('#eefaa8')
-        #self.name_panel = wx.Panel(self, -1, size = (500,700))
+        self.namePan.SetBackgroundColour('#eefaa8') # yellow cream
         self.name = ""
         self.lblname = wx.StaticText(self.namePan, label="Enter name:", pos = (60, 5))
         self.lblscore = wx.StaticText(self.namePan, label="Score:", pos = (60, 45))
@@ -779,13 +768,10 @@ class PostHighScoreFrame(wx.Frame):
 
 class App(wx.App):
     def OnInit(self):
-
-        self.first_game = True
-        
         # game window
         self.frame = Frame(parent = None)
-        #self.frame.Show()
         self.SetTopWindow(self.frame)
+        self.first_game = True
 
         # level window
         self.level_frame = LevelFrame(parent = None)
