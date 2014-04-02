@@ -553,7 +553,9 @@ class LevelFrame(wx.Frame):
         self.grid = wx.GridBagSizer(hgap=3, vgap=3)
         
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        
+
+        self.SetBackgroundColour('#a4dba3')
+		
         self.fyrirsogn = wx.StaticText(self, label="Choose a level") #pos = (140,20)
         self.fyrirsognFont = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.NORMAL)
         self.fyrirsogn.SetFont(self.fyrirsognFont)
@@ -592,7 +594,7 @@ class LevelFrame(wx.Frame):
         self.height = 7
         self.sortsOn = True
         
-        self.SetSizerAndFit(self.sizer)
+        self.SetSizerAndFit(self.sizer)        
 
     def start_game(self, event):
         if (app.first_game):
@@ -635,7 +637,7 @@ class HelpFrame(wx.Frame):
         wx.Frame.__init__(self, parent, -1, 'Help', size = (500, 700))
         wx.Frame.CenterOnScreen(self)
         self.Bind(wx.EVT_SIZE, self.OnSize)
-        self.SetBackgroundColour('#FFFFFF')
+        self.SetBackgroundColour('#eefaa8')
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.text = wx.StaticText(self, -1, temp, style=wx.ALIGN_LEFT, size=(500, 500))
@@ -654,7 +656,7 @@ class HighScoreFrame(wx.Frame):
     def __init__(self, parent, temp):
         wx.Frame.__init__(self, parent, -1, 'High Score', size = (200, 200))
         wx.Frame.CenterOnScreen(self)
-        self.SetBackgroundColour('#FFFFFF')
+        self.SetBackgroundColour('#FF99CC')
 
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
