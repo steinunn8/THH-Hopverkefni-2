@@ -349,10 +349,6 @@ class Frame(wx.Frame):
         m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
         self.Bind(wx.EVT_MENU, self.Kill, m_exit)
 
-        """menu = wx.Menu() # Take this one ....
-        m_undo = menu.Append(wx.ID_OK, "&Undo", "Undo the thing you just did.")
-        self.Bind(wx.EVT_MENU, self.onUndo, m_undo)
-        menuBar.Append(menu, "&Undo") # and this one out if we want it under file"""
         # change looks
         looks = wx.Menu()
         menuBar.Append(looks, "&Looks")
@@ -436,19 +432,18 @@ class Frame(wx.Frame):
         self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = False)
         self.post_score_frame.Show()
 
+    # When Undo is clicked we disable it and get last card
     def onUndo(self, event):
-        self.onUndoClicked()
-
-    def onUndoClicked(self):
         card = self.display.game.trash.show()
         if card.fromDeck == True:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
             self.toolbar.EnableTool(wx.ID_REDO, True)
             self.undoClicked = True
-            self.display.undo_draw()
+            self.display.undo_draw()            #Get last card
         else:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
 
+    # Function for checking if undo should be enabled or disabled
     def onUndoDone(self):
         card = self.display.game.trash.show()
         if card.fromDeck == True:
@@ -461,20 +456,20 @@ class Frame(wx.Frame):
         self.toolbar.EnableTool(wx.ID_UNDO, False)
         self.undoClicked = False
 
-    def onRedoClicked(self):
+    # When Redo is clicked, we redraw the card that we drew before
+    def onRedo(self, event):
         if self.undoClicked:
             self.toolbar.EnableTool(wx.ID_REDO, False)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
             self.undoClicked = False
-            self.display.redo_draw()
-
-    def onRedo(self, event):
-        self.onRedoClicked()
+            self.display.redo_draw()    #Redraw
 
     def disableRedo(self):
         self.toolbar.EnableTool(wx.ID_REDO, False)
         self.undoClicked = False
 
+
+    # Functions for choosing backgrounds
     def choose_background1(self, event):
         self.display.background = pygame.image.load("backgrounds/panda.png")
         self.display.background_rect = self.display.background.get_rect()
@@ -494,7 +489,9 @@ class Frame(wx.Frame):
     def choose_background5(self, event):
         self.display.background = pygame.image.load("backgrounds/unicorn.png")
         self.display.background_rect = self.display.background.get_rect()
-        
+       
+
+    # Functions for choosing backgrounds
     def choose_cardImage1(self, event):
         self.display.deck_img_file = 'cardImages/card_back.jpg'
         self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -525,6 +522,8 @@ class Frame(wx.Frame):
         self.display.draw_button.SetBitmapLabel(self.display.deck_image)
         self.display.back_image = pygame.image.load("cardImages/wat.jpeg")
 
+
+# The frame that you see when you choose new game
 class LevelFrame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, 'Choose level')
@@ -767,16 +766,6 @@ class App(wx.App):
         self.level_frame = LevelFrame(parent = None)
         self.level_frame.Show()
 
-        
-        #test for win window
-        '''
-        game = theGame.theGame(4, False)
-        score = Scores.score(game)
-        total = str(score.getScore())
-        divided = score.getDivided()
-        self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = False)
-        self.post_score_frame.Show()
-        '''
         return True
 
     
