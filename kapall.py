@@ -706,8 +706,6 @@ class PostHighScoreFrame(wx.Frame):
         self.vbox.Add(self.gifPan, 1, wx.EXPAND | wx.ALL, 5)
 
     def makeScorePan(self, total, divided):
-        print total
-        print divided
         self.scorePan = wx.Panel(self.panel, size = (510,140))
         # mint color = #a4dba3
         self.scorePan.SetBackgroundColour('#a4dba3')
