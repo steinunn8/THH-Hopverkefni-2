@@ -80,7 +80,7 @@ class Card(object):
 	def __init__(self, Suit, Rank, Red, image=None):
 		self.suit = Suit
 		self.rank = Rank
-		self.red = Red
+		self.red = Red 	# True if card is red, else False
 		self.up = False
 		self.left = None
 		self.right = None
@@ -90,7 +90,7 @@ class Card(object):
 		self.x = 450
 		self.y = 570
 		self.image = image
-		self.fromDeck = False
+		self.fromDeck = False # True if the card came from the deck
 
 	#When str() is used on Card, [X Y] will be the output 
 	#where X is the suit of the card and Y is the rank
@@ -127,6 +127,7 @@ class Card(object):
 			else:
 				self.right.insert_right(data,list)
 	
+	# Removes the card and also the children of the parents 
 	def delete(self):
 		if self.rightParent is not None:
 			right_parent = self.rightParent

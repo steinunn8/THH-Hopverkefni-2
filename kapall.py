@@ -255,7 +255,7 @@ class PygameDisplay(wx.Window):
         self.points_rect = self.points_image.get_rect()
         self.points_rect.center = pos
         self.screen.blit(self.points_image, self.points_rect)
-	
+    
     def draw_bonustime(self):
         if(self.game_over):
             self.bonustime = self.last_bonustime
@@ -312,7 +312,7 @@ class PygameDisplay(wx.Window):
             divided = self.game.scoreThing.getDivided()
             self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = True)
             self.post_score_frame.Show()  
-	
+    
     def undo_draw(self):
         # put card back in pile
         self.game.undoDraw(self.compare_card.real_card)
@@ -414,8 +414,7 @@ class Frame(wx.Frame):
         self.Layout()
  
     def Kill(self, event):
-        game_level_1 = theGame.theGame(5, False)
-        app.frame.display.start_game(game_level_1)
+        self.display.Kill(event)
         self.Destroy()
  
     def OnSize(self, event):
@@ -513,13 +512,13 @@ class Frame(wx.Frame):
         self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         self.display.draw_button.SetBitmapLabel(self.display.deck_image)
         self.display.back_image = pygame.image.load("cardImages/card_back.jpg")
-    	
+        
     def choose_cardImage2(self, event):
         self.display.deck_img_file = 'cardImages/classic_red.png'
         self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         self.display.draw_button.SetBitmapLabel(self.display.deck_image)
         self.display.back_image = pygame.image.load("cardImages/classic_red.png")
-    	
+        
     def choose_cardImage3(self, event):
         self.display.deck_img_file = 'cardImages/aces.png'
         self.display.deck_image = wx.Image(self.display.deck_img_file, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -628,7 +627,6 @@ class HelpFrame(wx.Frame):
     def __init__(self, parent, temp):
         wx.Frame.__init__(self, parent, -1, 'Help', size = (500, 700))
         wx.Frame.CenterOnScreen(self)
-        self.Bind(wx.EVT_CLOSE, self.Kill)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.SetBackgroundColour('#FFFFFF')
 
@@ -673,8 +671,8 @@ class PostHighScoreFrame(wx.Frame):
         self.Layout()
 
     def Kill(self, event):
-        app.level_frame = LevelFrame(parent = None)
-        app.level_frame.Show()
+        #app.level_frame = LevelFrame(parent = None)
+        #app.level_frame.Show()
         self.Destroy()
 
     #   calls methods that make panels to hold buttons, texts and pictures
