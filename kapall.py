@@ -89,6 +89,9 @@ class PygameDisplay(wx.Window):
         self.minutes = 0
         self.mouse_down = False
         self.white = (255, 255, 255)
+        self.last_bonustime = self.game.scoreThing.getBonusTime()
+        self.last_time = int(self.game.getTime()) - self.start_time
+        self.game_over = False
 
         self.background = pygame.image.load("backgrounds/panda.png")
         self.background_rect = self.background.get_rect()
@@ -254,7 +257,10 @@ class PygameDisplay(wx.Window):
         self.screen.blit(self.points_image, self.points_rect)
 	
     def draw_bonustime(self):
-        self.bonustime = self.game.scoreThing.getBonusTime()
+        if(self.game_over):
+            self.bonustime = self.last_bonustime
+        else:
+            self.bonustime = self.game.scoreThing.getBonusTime()
         black = (0,0,0)
         pos = (780, 50)
         
@@ -267,7 +273,10 @@ class PygameDisplay(wx.Window):
 
     def draw_time(self):
         # get seconds
-        self.elapsed_time = int(self.game.getTime()) - self.start_time
+        if(self.game_over):
+            self.elapsed_time = self.last_time
+        else:
+            self.elapsed_time = int(self.game.getTime()) - self.start_time
         
         # get minutes
         if (self.elapsed_time >= 60):
@@ -296,6 +305,9 @@ class PygameDisplay(wx.Window):
 
     def game_won(self):
         if len(self.pyramid_cards.sprites()) == 0:
+            self.last_bonustime = self.game.scoreThing.getBonusTime()
+            self.last_time = int(self.game.getTime()) - self.start_time
+            self.game_over = True
             total = str(self.game.scoreThing.getScore())
             divided = self.game.scoreThing.getDivided()
             self.post_score_frame = PostHighScoreFrame(parent = None, total = total, divided = divided, won = True)
@@ -425,6 +437,9 @@ class Frame(wx.Frame):
         self.help_frame.Show()
 
     def onGiveUp(self, event):
+        self.display.last_bonustime = self.display.game.scoreThing.getBonusTime()
+        self.display.last_time = int(self.display.game.getTime()) - self.display.start_time
+        self.display.game_over = True
         self.game = self.display.game
         score = self.game.scoreThing
         total = str(score.getScore())
