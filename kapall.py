@@ -332,9 +332,6 @@ class Frame(wx.Frame):
         # menu bar
         menuBar = wx.MenuBar()
         menu = wx.Menu()
-        #EXIT
-        m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
-        self.Bind(wx.EVT_MENU, self.Kill, m_exit)
         menuBar.Append(menu, "&File")
         # NEW GAME
         m_new_game = menu.Append(wx.ID_ABOUT, "&New Game", "Start a new game.")
@@ -348,6 +345,9 @@ class Frame(wx.Frame):
         # GIVE UP
         m_give_up = menu.Append(wx.ID_ABORT, "&Give Up", "Give up and save score")
         self.Bind(wx.EVT_MENU, self.onGiveUp, m_give_up)
+        # EXTI
+        m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
+        self.Bind(wx.EVT_MENU, self.Kill, m_exit)
 
         """menu = wx.Menu() # Take this one ....
         m_undo = menu.Append(wx.ID_OK, "&Undo", "Undo the thing you just did.")
