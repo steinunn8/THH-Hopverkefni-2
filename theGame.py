@@ -15,7 +15,7 @@ class theGame(object):
 		self.sortsOn = sortsOn
 		
 		self.height = height
-		self.start = time.clock()
+		self.start = time.clock()					
 		self.time = self.start
 		self.win = False
 		self.scoreThing = Scores.Score(self)
@@ -29,16 +29,16 @@ class theGame(object):
 		else:
 			return True
 	
-	#Compares card x to the first card in trash.
+	#Compares card x to the first card in trash. Returns true if move is leagal
 	def isLegal(self, x): #x is a card
-		if(self.trash.isEmpty()):
+		if(self.trash.isEmpty()):	#if trash is emptry, then move is not leagal
 			return False
-		y = self.trash.show()
+		y = self.trash.show()		#get first card in trash to compare
 		if(x.rank == 100 or y.rank == 100):
 			return True
 		elif(self.sortsOn):	
 			if(x.isAvailable() and self.checkColor(x)): #If card has no children and the colors are different
-				if(abs(x.rank - y.rank) == 1):
+				if(abs(x.rank - y.rank) == 1): 			#if the card is one higher or one lower, move is leagal
 					return True
 				elif(abs(x.rank - y.rank) == 12): #if ace and king or king and ace
 					return True
@@ -75,7 +75,7 @@ class theGame(object):
 		self.trash.addFirst(card)
 		return card
 
-	#Prints out cards in all decks
+	#Prints out cards in all decks, for testing
 	def showAll(self):
 		print 'Deck: '
 		self.deck.showAll()

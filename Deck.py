@@ -8,7 +8,7 @@ class Deck:
 		suit = ["D", "C", "H", "S"]
 		rank = range(1, 14)
 		sheet = pygame.image.load('cards.jpg')
-		x = 0
+		x = 0	# x nd y for cutting down cards pic
 		y = 0
 		width = 80
 		height = 124
@@ -26,13 +26,14 @@ class Deck:
 				else:
 					card = Card(suit[i], rank[j], False, image)
 					self.deck.append(card)
-			x = 0
-			y += 123
+			x = 0		
+			y += 123	
 		#Add a wild card
 		wild_img = pygame.image.load('wild.png')
 		wild = Card("Wild", 100, False, wild_img)
 		self.deck.append(wild)
 
+	#Shuffle the deck
 	def shuffle(self):
 		random.shuffle(self.deck)
 	
@@ -72,9 +73,7 @@ class Deck:
 			print "is empty"
 		for i in range(0, len(self.deck)):
 			print self.deck[i],
-	
-	def get(self, number=0):
-		return self.deck[number].get()
+
 
 class Card(object):
 	def __init__(self, Suit, Rank, Red, image=None):
@@ -82,9 +81,9 @@ class Card(object):
 		self.rank = Rank
 		self.red = Red 	# True if card is red, else False
 		self.up = False
-		self.left = None
-		self.right = None
-		self.rightParent = None
+		self.left = None	#left child
+		self.right = None	#right child
+		self.rightParent = None	
 		self.leftParent = None
 		#center of card, default position
 		self.x = 450
@@ -97,6 +96,7 @@ class Card(object):
 	def __str__(self):
 		return "["+self.suit+" "+str(self.rank)+"]"
 		
+	#insert a left child to self
 	def insert_left(self, data, list):
 		if self.left is None:
 			self.left = data
@@ -107,6 +107,7 @@ class Card(object):
 		else:
 			self.left.insert_left(data,list)
 	
+	#insert a rhigt child to self
 	def insert_right(self, data, list, special=False):
 		#special is True if card has 2 parents, and those parents then need update
 		if self.right is None:
@@ -127,7 +128,7 @@ class Card(object):
 			else:
 				self.right.insert_right(data,list)
 	
-	# Removes the card and also the children of the parents 
+	#Removes the card and also the children of the parents 
 	def delete(self):
 		if self.rightParent is not None:
 			right_parent = self.rightParent
@@ -135,7 +136,8 @@ class Card(object):
 		if self.leftParent is not None:
 			left_parent = self.leftParent
 			left_parent.right = None
-			
+	
+	#Return true if the card has no children 
 	def isAvailable(self):
 		if(self.left is None and self.right is None):
 			self.up = True
