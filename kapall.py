@@ -414,7 +414,8 @@ class Frame(wx.Frame):
         self.Layout()
  
     def Kill(self, event):
-        self.display.Kill(event)
+        game_level_1 = theGame.theGame(5, False)
+        app.frame.display.start_game(game_level_1)
         self.Destroy()
  
     def OnSize(self, event):
@@ -627,6 +628,7 @@ class HelpFrame(wx.Frame):
     def __init__(self, parent, temp):
         wx.Frame.__init__(self, parent, -1, 'Help', size = (500, 700))
         wx.Frame.CenterOnScreen(self)
+        self.Bind(wx.EVT_CLOSE, self.Kill)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.SetBackgroundColour('#FFFFFF')
 
@@ -671,8 +673,8 @@ class PostHighScoreFrame(wx.Frame):
         self.Layout()
 
     def Kill(self, event):
-        #app.level_frame = LevelFrame(parent = None)
-        #app.level_frame.Show()
+        app.level_frame = LevelFrame(parent = None)
+        app.level_frame.Show()
         self.Destroy()
 
     #   calls methods that make panels to hold buttons, texts and pictures
