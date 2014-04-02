@@ -102,6 +102,9 @@ class PygameDisplay(wx.Window):
 
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_TIMER, self.Update, self.timer)
+        app.frame.disableUndo()
+        app.frame.disableRedo()
+
 
     def generate_deck(self):
          # deck to draw new card
@@ -206,8 +209,8 @@ class PygameDisplay(wx.Window):
         # check if game is won
         self.game_won()
 
-        # make it impossible to "undo"
-        app.frame.onUndoDone()
+        # make it impossible to "undo" and "redo"
+        app.frame.disableUndo()
         app.frame.disableRedo()
 
     def drawNewCard(self, event):
@@ -454,14 +457,18 @@ class Frame(wx.Frame):
         else:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
 
-    def onRedoClicked(self, event):
+    def disableUndo(self):
+        self.toolbar.EnableTool(wx.ID_UNDO, False)
+        self.undoClicked = False
+
+    def onRedoClicked(self):
         if self.undoClicked:
             self.toolbar.EnableTool(wx.ID_REDO, False)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
             self.undoClicked = False
             self.display.redo_draw()
 
-    def onRedo(self):
+    def onRedo(self, event):
         self.onRedoClicked()
 
     def disableRedo(self):
@@ -571,9 +578,9 @@ class LevelFrame(wx.Frame):
         self.SetSizerAndFit(self.sizer)
 
     def start_game(self, event):
-    	game = theGame.theGame(self.height, self.sortsOn)
-    	app.frame.display.start_game(game)
-    	self.Destroy()
+        game = theGame.theGame(self.height, self.sortsOn)
+        app.frame.display.start_game(game)
+        self.Destroy()
     
     def Levels(self, event):
         if(event.Id == 1):
