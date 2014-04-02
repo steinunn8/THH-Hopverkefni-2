@@ -208,6 +208,7 @@ class PygameDisplay(wx.Window):
 
         # make it impossible to "undo"
         app.frame.onUndoDone()
+        app.frame.disableRedo()
 
     def drawNewCard(self, event):
         self.draw_card()
@@ -452,15 +453,20 @@ class Frame(wx.Frame):
             self.toolbar.EnableTool(wx.ID_REDO, False)
         else:
             self.toolbar.EnableTool(wx.ID_UNDO, False)
-        #Add stuff here to to
 
-    def onRedo(self, event):
+    def onRedoClicked(self, event):
         if self.undoClicked:
             self.toolbar.EnableTool(wx.ID_REDO, False)
             self.toolbar.EnableTool(wx.ID_UNDO, True)
             self.undoClicked = False
             self.display.redo_draw()
-        #Add stuff here to do
+
+    def onRedo(self):
+        self.onRedoClicked()
+
+    def disableRedo(self):
+        self.toolbar.EnableTool(wx.ID_REDO, False)
+        self.undoClicked = False
 
     def choose_background1(self, event):
         self.display.background = pygame.image.load("backgrounds/panda.png")
