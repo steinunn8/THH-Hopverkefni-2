@@ -161,10 +161,10 @@ class Score(object):
 		pyr = self.getPyrPoints()
 		win = self.getWinPoints()
 
-		sTime = '          ' + str(time) + " points for being quick. \n"
-		sDeck = '          ' + str(deck) + " points for having many cards left in the deck. \n"
-		sPyr = '          ' + str(pyr) + " points for removing pyramid cards. \n"
-		sWin = '          ' + str(win) + " points for winning the game. \n"
+		sTime = str(time) + " points for being quick. \n"
+		sDeck = str(deck) + " points for having many cards left in the deck. \n"
+		sPyr =  str(pyr) + " points for removing pyramid cards. \n"
+		sWin =  str(win) + " points for winning the game. \n"
 
 		return sTime + sDeck + sPyr + sWin
 		
