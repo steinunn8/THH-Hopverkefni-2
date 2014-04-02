@@ -76,6 +76,7 @@ class PygameDisplay(wx.Window):
         # game stuff     
         pygame.init()
         self.screen = pygame.Surface(self.size, 0, 32)
+        self.first_game = True
 
         # draw draw button
         self.deck_image_file = self.deck_img_file
@@ -103,10 +104,13 @@ class PygameDisplay(wx.Window):
         self.generate_deck()
         self.generate_pyramid()
 
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_TIMER, self.Update, self.timer)
         app.frame.disableUndo()
         app.frame.disableRedo()
+
+        if (self.first_game):
+            self.Bind(wx.EVT_PAINT, self.OnPaint)
+            self.Bind(wx.EVT_TIMER, self.Update, self.timer)
+            self.first_game = False
 
 
     def generate_deck(self):
@@ -581,7 +585,6 @@ class LevelFrame(wx.Frame):
         
         self.sizer.Add(self.grid, flag=wx.ALL|wx.EXPAND, border=10)
         
-        
         self.start_game_button = wx.Button(self, label="Start game", size= (100, 50))
         self.Bind(wx.EVT_BUTTON, self.start_game, self.start_game_button)
         self.sizer.Add(self.start_game_button, 0, wx.ALIGN_CENTER, 20)
@@ -592,6 +595,10 @@ class LevelFrame(wx.Frame):
         self.SetSizerAndFit(self.sizer)
 
     def start_game(self, event):
+        if (app.first_game):
+            app.frame.Show()
+            app.first_game = False
+            
         game = theGame.theGame(self.height, self.sortsOn)
         app.frame.display.start_game(game)
         self.Destroy()
@@ -671,8 +678,8 @@ class PostHighScoreFrame(wx.Frame):
         self.Layout()
 
     def Kill(self, event):
-        #app.level_frame = LevelFrame(parent = None)
-        #app.level_frame.Show()
+        app.level_frame = LevelFrame(parent = None)
+        app.level_frame.Show()
         self.Destroy()
 
     #   calls methods that make panels to hold buttons, texts and pictures
@@ -742,7 +749,7 @@ class PostHighScoreFrame(wx.Frame):
         
     def quitGame(self, event):
         self.Destroy()
-        app.frame.Destroy()
+        app.frame.Kill(app.frame)
 
     def makeName(self):
         self.namePan = wx.Panel(self.panel)
@@ -770,9 +777,12 @@ class PostHighScoreFrame(wx.Frame):
 
 class App(wx.App):
     def OnInit(self):
+
+        self.first_game = True
+        
         # game window
         self.frame = Frame(parent = None)
-        self.frame.Show()
+        #self.frame.Show()
         self.SetTopWindow(self.frame)
 
         # level window
